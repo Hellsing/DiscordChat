@@ -2,9 +2,9 @@ package com.hellzing.discordchat.discord;
 
 import com.hellzing.discordchat.DCCommands;
 import com.hellzing.discordchat.utils.MiscUtils;
+import lombok.val;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
-import lombok.val;
 
 public class ChatListener extends ListenerAdapter
 {

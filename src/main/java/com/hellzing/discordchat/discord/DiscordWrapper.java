@@ -1,13 +1,12 @@
 package com.hellzing.discordchat.discord;
 
 import com.hellzing.discordchat.DCConfig;
+import com.hellzing.discordchat.DiscordChat;
 import lombok.Getter;
 import lombok.val;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
-import com.hellzing.discordchat.DiscordChat;
 
 import javax.security.auth.login.LoginException;
 import java.util.Optional;

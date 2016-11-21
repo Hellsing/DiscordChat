@@ -1,9 +1,9 @@
 package com.hellzing.discordchat.commands;
 
 import com.hellzing.discordchat.discord.DiscordWrapper;
+import lombok.val;
 import net.dv8tion.jda.entities.User;
 import net.minecraft.server.MinecraftServer;
-import lombok.val;
 
 public class Online implements ICommand
 {
