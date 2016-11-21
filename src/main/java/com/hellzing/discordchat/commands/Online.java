@@ -6,7 +6,8 @@ import net.minecraft.server.MinecraftServer;
 
 public class Online implements ICommand
 {
-    private static final String onlineFormat = "!--- Currently Online: %1$d ---!";
+    private static final String onlineFormat = "--- Currently Online: %1$d ---";
+    private static final String newLine = System.getProperty("line.separator");
 
     @Override
     public String[] getCommandAliases()
@@ -19,12 +20,10 @@ public class Online implements ICommand
     {
         StringBuilder sb = new StringBuilder();
 
-        // Tag the sender
-        sb.append(sender.getAsMention());
-        sb.append(System.getProperty("line.separator"));
-
         // Syntax highlighting
-        sb.append("```diff");
+        sb.append("```");
+        sb.append("diff");
+        sb.append(newLine);
 
         // Apply current player count
         sb.append(String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount()));
@@ -33,7 +32,7 @@ public class Online implements ICommand
         if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
         {
             // Add a new line followed by all user names separated by comma
-            sb.append(System.getProperty("line.separator"));
+            sb.append(newLine);
             sb.append("+ ");
             sb.append(MinecraftServer.getServer().getConfigurationManager().func_152609_b(false));
         }
