@@ -12,9 +12,6 @@ import net.minecraft.util.IChatComponent;
 
 import java.util.regex.Pattern;
 
-/**
- * @author shadowfacts
- */
 public class MiscUtils
 {
 
@@ -24,8 +21,6 @@ public class MiscUtils
     public static Pattern achievementMessage;
     public static Pattern playerJoinMessage;
     public static Pattern playerLeaveMessage;
-
-    //	private static final Pattern discordMessage = Pattern.compile("MC \u00BB .+");
 
     public static void sendMessage(String text)
     {
@@ -46,36 +41,6 @@ public class MiscUtils
     public static String toDiscordMessage(String author, String message)
     {
         return DCConfig.mcToDiscordFormat.replaceAll("\\$1", author).replaceAll("\\$2", message);
-    }
-
-    public static boolean isMessageFromMC(Message message)
-    {
-        return isMessageFromMC(message.getContent());
-    }
-
-    public static boolean isMessageFromMC(String message)
-    {
-        return discordMessage.matcher(message).matches() || isDeathMessage(message) || isAchievementMessage(message) || isPlayerJoinMessage(message) || isPlayerLeaveMessage(message);
-    }
-
-    private static boolean isDeathMessage(String message)
-    {
-        return deathMessage.matcher(message).matches();
-    }
-
-    private static boolean isAchievementMessage(String message)
-    {
-        return achievementMessage.matcher(message).matches();
-    }
-
-    private static boolean isPlayerJoinMessage(String message)
-    {
-        return playerJoinMessage.matcher(message).matches();
-    }
-
-    private static boolean isPlayerLeaveMessage(String message)
-    {
-        return playerLeaveMessage.matcher(message).matches();
     }
 
     public static boolean isMessageFromDiscord(String message)

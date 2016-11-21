@@ -31,12 +31,13 @@ public class DiscordChat
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
     {
-        // Initialize configs
-        DCConfig.init(modConfigDirectory);
+        // Initialize setup config
         DCPrivateProps.init(modConfigDirectory);
-
         if (DCPrivateProps.setup)
         {
+            // Initialize main config
+            DCConfig.init(modConfigDirectory);
+
             // Check if mod is enabled
             if (DCConfig.enabled)
             {

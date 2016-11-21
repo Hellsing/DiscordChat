@@ -28,7 +28,7 @@ public class MainListener extends ListenerAdapter
                 command.doCommand(event.getChannel().getName(), args);
             }
         }
-        else if (MiscUtils.shouldUseChannel(event.getChannel()) && !MiscUtils.isMessageFromMC(event.getMessage()))
+        else if (MiscUtils.shouldUseChannel(event.getChannel()) && !event.getAuthor().isBot())
         {
             MiscUtils.sendMessage(MiscUtils.fromDiscordMessage(event.getMessage()));
         }
