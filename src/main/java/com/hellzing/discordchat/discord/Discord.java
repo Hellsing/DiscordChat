@@ -10,19 +10,19 @@ import com.hellzing.discordchat.DiscordChat;
 import javax.security.auth.login.LoginException;
 import java.util.Optional;
 
-public class DiscordThread implements Runnable
+public class Discord implements Runnable
 {
     private static Thread thread;
 
-    public static DiscordThread instance;
+    public static Discord instance;
 
     public JDA jda;
 
-    public static void runThread()
+    public static void initialize()
     {
         if (thread == null)
         {
-            thread = new Thread(new DiscordThread());
+            thread = new Thread(new Discord());
             thread.run();
         }
         else
@@ -31,7 +31,7 @@ public class DiscordThread implements Runnable
         }
     }
 
-    public DiscordThread()
+    public Discord()
     {
         instance = this;
     }
@@ -41,7 +41,7 @@ public class DiscordThread implements Runnable
     {
         try
         {
-            jda = new JDABuilder().setBotToken(DCConfig.botToken).addListener(new MainListener()).buildBlocking();
+            jda = new JDABuilder().setBotToken(DCConfig.botToken).addListener(new ChatListener()).buildBlocking();
         }
         catch (LoginException | IllegalArgumentException e)
         {
@@ -66,6 +66,11 @@ public class DiscordThread implements Runnable
                 DCConfig.enabled = false;
                 return;
             }
+            else
+            {
+                // Set temporary game
+                jda.getAccountManager().setGame("initializing...");
+            }
         }
     }
 
@@ -81,17 +86,17 @@ public class DiscordThread implements Runnable
         }
     }
 
-    public void sendMessageToChannel(String name, String message)
+    public void sendMessageToChannel(String channelName, String message)
     {
-        Optional<TextChannel> channel = getChannel(name);
+        Optional<TextChannel> channel = getChannel(channelName);
         if (channel.isPresent())
         {
             channel.get().sendMessage(message);
         }
     }
 
-    private Optional<TextChannel> getChannel(String name)
+    private Optional<TextChannel> getChannel(String channelName)
     {
-        return jda.getGuildById(DCConfig.serverId).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(name)).findFirst();
+        return jda.getGuildById(DCConfig.serverId).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
     }
 }

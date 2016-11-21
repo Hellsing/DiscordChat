@@ -1,7 +1,7 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.Online;
-import com.hellzing.discordchat.discord.DiscordThread;
+import com.hellzing.discordchat.discord.Discord;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -51,7 +51,7 @@ public class DiscordChat
 
                 // Start Discord wrapper
                 log.info("Connecting to the Discord server...");
-                DiscordThread.runThread();
+                Discord.initialize();
             }
         }
         else
@@ -64,6 +64,6 @@ public class DiscordChat
     public void onServerStopping(FMLServerStoppingEvent event)
     {
         // Shutdown Discord wrapper
-        DiscordThread.instance.jda.shutdown();
+        Discord.instance.jda.shutdown();
     }
 }

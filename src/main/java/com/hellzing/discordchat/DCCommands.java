@@ -27,7 +27,7 @@ public class DCCommands
     {
         for (ICommand command : commands)
         {
-            if (Arrays.asList(command.getCommandAliases()).contains(name))
+            if (Arrays.asList(command.getCommandAliases()).contains(name.toLowerCase()))
             {
                 return command;
             }

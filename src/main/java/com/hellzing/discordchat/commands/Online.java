@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.commands;
 
-import com.hellzing.discordchat.discord.DiscordThread;
+import com.hellzing.discordchat.discord.Discord;
 import net.dv8tion.jda.entities.User;
 import net.minecraft.server.MinecraftServer;
 
@@ -41,6 +41,6 @@ public class Online implements ICommand
         sb.append("```");
 
         // Send message to discord channel
-        DiscordThread.instance.sendMessageToChannel(channel, sb.toString());
+        Discord.instance.sendMessageToChannel(channel, sb.toString());
     }
 }

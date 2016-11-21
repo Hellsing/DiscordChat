@@ -1,6 +1,6 @@
 package com.hellzing.discordchat;
 
-import com.hellzing.discordchat.discord.DiscordThread;
+import com.hellzing.discordchat.discord.Discord;
 import com.hellzing.discordchat.utils.MiscUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
@@ -25,10 +25,14 @@ public class ForgeEventHandler
             lastUpdate = System.currentTimeMillis();
 
             // Create new game based on players
-            String gameName = String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount(), MinecraftServer.getServer().getMaxPlayers());
+            String gameName = "alone...";
+            if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
+            {
+                gameName = String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount(), MinecraftServer.getServer().getMaxPlayers());
+            }
 
             // Apply game
-            DiscordThread.instance.jda.getAccountManager().setGame(gameName);
+            Discord.instance.jda.getAccountManager().setGame(gameName);
         }
     }
 
@@ -37,7 +41,7 @@ public class ForgeEventHandler
     {
         if (!MiscUtils.isMessageFromDiscord(event.message))
         {
-            DiscordThread.instance.sendMessageToAllChannels(MiscUtils.toDiscordMessage(event.username, event.message));
+            Discord.instance.sendMessageToAllChannels(MiscUtils.toDiscordMessage(event.username, event.message));
         }
     }
 
@@ -46,7 +50,7 @@ public class ForgeEventHandler
     {
         if (DCConfig.sendPlayerDeathMessages && event.entityLiving instanceof EntityPlayer)
         {
-            DiscordThread.instance.sendMessageToAllChannels(MiscUtils.createDiscordDeathMessage((EntityPlayer) event.entityLiving));
+            Discord.instance.sendMessageToAllChannels(MiscUtils.createDiscordDeathMessage((EntityPlayer) event.entityLiving));
         }
     }
 
@@ -62,7 +66,7 @@ public class ForgeEventHandler
                 return;
             }
 
-            DiscordThread.instance.sendMessageToAllChannels(MiscUtils.createAchievementMessage(event.entityPlayer, event.achievement));
+            Discord.instance.sendMessageToAllChannels(MiscUtils.createAchievementMessage(event.entityPlayer, event.achievement));
         }
     }
 
@@ -71,7 +75,7 @@ public class ForgeEventHandler
     {
         if (DCConfig.sendPlayerJoinLeaveMessages)
         {
-            DiscordThread.instance.sendMessageToAllChannels(MiscUtils.createLoggedInMessage(event.player));
+            Discord.instance.sendMessageToAllChannels(MiscUtils.createLoggedInMessage(event.player));
         }
     }
 
@@ -80,7 +84,7 @@ public class ForgeEventHandler
     {
         if (DCConfig.sendPlayerJoinLeaveMessages)
         {
-            DiscordThread.instance.sendMessageToAllChannels(MiscUtils.createLoggedOutMessage(event.player));
+            Discord.instance.sendMessageToAllChannels(MiscUtils.createLoggedOutMessage(event.player));
         }
     }
 }
