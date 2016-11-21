@@ -1,8 +1,10 @@
 package com.hellzing.discordchat.commands;
 
+import net.dv8tion.jda.entities.User;
+
 public interface ICommand
 {
-    String[] getNames();
+    String[] getCommandAliases();
 
-    void doCommand(String channel, String[] args);
+    void doCommand(User sender, String channel, String[] args);
 }

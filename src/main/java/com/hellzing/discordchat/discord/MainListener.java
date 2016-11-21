@@ -11,6 +11,7 @@ public class MainListener extends ListenerAdapter
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event)
     {
+        // Handle commands
         if (event.getMessage().getContent().startsWith("!"))
         {
             String msg = event.getMessage().getContent();
@@ -25,10 +26,11 @@ public class MainListener extends ListenerAdapter
             ICommand command = DCCommands.getInstance().getCommand(commandName);
             if (command != null)
             {
-                command.doCommand(event.getChannel().getName(), args);
+                command.doCommand(event.getAuthor(), event.getChannel().getName(), args);
             }
         }
-        else if (MiscUtils.shouldUseChannel(event.getChannel()) && !event.getAuthor().isBot())
+        // Handle regular messages
+        else if (!event.getAuthor().isBot() && MiscUtils.shouldUseChannel(event.getChannel()))
         {
             MiscUtils.sendMessage(MiscUtils.fromDiscordMessage(event.getMessage()));
         }
