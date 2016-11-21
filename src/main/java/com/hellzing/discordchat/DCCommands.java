@@ -1,6 +1,7 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.ICommand;
+import lombok.val;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +26,7 @@ public class DCCommands
 
     public ICommand getCommand(String name)
     {
-        for (ICommand command : commands)
+        for (val command : commands)
         {
             if (Arrays.asList(command.getCommandAliases()).contains(name.toLowerCase()))
             {

@@ -1,10 +1,10 @@
 package com.hellzing.discordchat.discord;
 
 import com.hellzing.discordchat.DCCommands;
-import com.hellzing.discordchat.commands.ICommand;
 import com.hellzing.discordchat.utils.MiscUtils;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
+import lombok.val;
 
 public class ChatListener extends ListenerAdapter
 {
@@ -17,7 +17,7 @@ public class ChatListener extends ListenerAdapter
             // Handle commands
             if (event.getMessage().getContent().startsWith("!"))
             {
-                String msg = event.getMessage().getContent();
+                val msg = event.getMessage().getContent();
                 String commandName = msg.substring(1);
                 String[] args = {};
                 if (commandName.contains(" "))
@@ -26,7 +26,7 @@ public class ChatListener extends ListenerAdapter
                     args = msg.substring(msg.indexOf(" ")).split(" ");
                 }
 
-                ICommand command = DCCommands.getInstance().getCommand(commandName);
+                val command = DCCommands.getInstance().getCommand(commandName);
                 if (command != null)
                 {
                     command.doCommand(event.getAuthor(), event.getChannel().getName(), args);

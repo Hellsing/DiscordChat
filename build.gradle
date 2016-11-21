@@ -75,8 +75,8 @@ configurations {
 }
 
 dependencies {
+	compileOnly "org.projectlombok:lombok:1.16.10"
 	shade group: "net.shadowfacts", name: "ShadowMC", version: mc_version + "-" + shadowmc_version, classifier: "deobf"
-
 	shade group: "net.dv8tion", name: "JDA", version: "2.3.0_379" , classifier: "withDependencies"
 }
 

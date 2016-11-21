@@ -1,12 +1,13 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.Online;
-import com.hellzing.discordchat.discord.Discord;
+import com.hellzing.discordchat.discord.DiscordWrapper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import lombok.val;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,16 +43,23 @@ public class DiscordChat
             if (DCConfig.enabled)
             {
                 // Register forge event handlers
-                ForgeEventHandler feh = new ForgeEventHandler();
-                MinecraftForge.EVENT_BUS.register(feh);
-                FMLCommonHandler.instance().bus().register(feh);
+                val eventHandler = new ForgeEventHandler();
+                MinecraftForge.EVENT_BUS.register(eventHandler);
+                FMLCommonHandler.instance().bus().register(eventHandler);
 
                 // Register commands
                 DCCommands.getInstance().registerCommand(new Online());
 
-                // Start Discord wrapper
-                log.info("Connecting to the Discord server...");
-                Discord.initialize();
+                try
+                {
+                    // Start DiscordWrapper wrapper
+                    log.info("Connecting to the DiscordWrapper server...");
+                    DiscordWrapper.initialize();
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         }
         else
@@ -63,7 +71,7 @@ public class DiscordChat
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event)
     {
-        // Shutdown Discord wrapper
-        Discord.instance.jda.shutdown();
+        // Shutdown DiscordWrapper wrapper
+        DiscordWrapper.getInstance().jda.shutdown();
     }
 }

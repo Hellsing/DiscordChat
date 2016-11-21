@@ -1,10 +1,11 @@
 package com.hellzing.discordchat;
 
-import com.hellzing.discordchat.discord.Discord;
+import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MiscUtils;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
+import lombok.val;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +33,7 @@ public class ForgeEventHandler
             }
 
             // Apply game
-            Discord.instance.jda.getAccountManager().setGame(gameName);
+            DiscordWrapper.getInstance().jda.getAccountManager().setGame(gameName);
         }
     }
 
@@ -41,7 +42,7 @@ public class ForgeEventHandler
     {
         if (!MiscUtils.isMessageFromDiscord(event.message))
         {
-            Discord.instance.sendMessageToAllChannels(MiscUtils.toDiscordMessage(event.username, event.message));
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.toDiscordMessage(event.username, event.message));
         }
     }
 
@@ -50,7 +51,7 @@ public class ForgeEventHandler
     {
         if (DCConfig.sendPlayerDeathMessages && event.entityLiving instanceof EntityPlayer)
         {
-            Discord.instance.sendMessageToAllChannels(MiscUtils.createDiscordDeathMessage((EntityPlayer) event.entityLiving));
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createDiscordDeathMessage((EntityPlayer) event.entityLiving));
         }
     }
 
@@ -60,13 +61,13 @@ public class ForgeEventHandler
         if (DCConfig.sendPlayerAchievementMessages && event.entityPlayer instanceof EntityPlayerMP)
         {
             // Check if player has the achievement already or can't get it
-            EntityPlayerMP playerMP = (EntityPlayerMP) event.entityPlayer;
+            val playerMP = (EntityPlayerMP) event.entityPlayer;
             if (playerMP.func_147099_x().hasAchievementUnlocked(event.achievement) || !playerMP.func_147099_x().canUnlockAchievement(event.achievement))
             {
                 return;
             }
 
-            Discord.instance.sendMessageToAllChannels(MiscUtils.createAchievementMessage(event.entityPlayer, event.achievement));
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createAchievementMessage(event.entityPlayer, event.achievement));
         }
     }
 
@@ -75,7 +76,7 @@ public class ForgeEventHandler
     {
         if (DCConfig.sendPlayerJoinLeaveMessages)
         {
-            Discord.instance.sendMessageToAllChannels(MiscUtils.createLoggedInMessage(event.player));
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createLoggedInMessage(event.player));
         }
     }
 
@@ -84,7 +85,7 @@ public class ForgeEventHandler
     {
         if (DCConfig.sendPlayerJoinLeaveMessages)
         {
-            Discord.instance.sendMessageToAllChannels(MiscUtils.createLoggedOutMessage(event.player));
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createLoggedOutMessage(event.player));
         }
     }
 }

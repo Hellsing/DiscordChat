@@ -1,8 +1,9 @@
 package com.hellzing.discordchat.commands;
 
-import com.hellzing.discordchat.discord.Discord;
+import com.hellzing.discordchat.discord.DiscordWrapper;
 import net.dv8tion.jda.entities.User;
 import net.minecraft.server.MinecraftServer;
+import lombok.val;
 
 public class Online implements ICommand
 {
@@ -18,7 +19,7 @@ public class Online implements ICommand
     @Override
     public void doCommand(User sender, String channel, String[] args)
     {
-        StringBuilder sb = new StringBuilder();
+        val sb = new StringBuilder();
 
         // Syntax highlighting
         sb.append("```");
@@ -41,6 +42,6 @@ public class Online implements ICommand
         sb.append("```");
 
         // Send message to discord channel
-        Discord.instance.sendMessageToChannel(channel, sb.toString());
+        DiscordWrapper.getInstance().sendMessageToChannel(channel, sb.toString());
     }
 }
