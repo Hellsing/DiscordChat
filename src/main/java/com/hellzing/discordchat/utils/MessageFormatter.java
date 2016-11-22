@@ -19,7 +19,7 @@ public class MessageFormatter
     @Getter
     private static final String minecraftChatFormat = "`<%s>` %s";
     @Getter
-    private static final String discordChatFormat = "§7DC »§r <§3%s§r> %s";
+    private static final String discordChatFormat = "\u00A77DC \u00BB\u00A7r <\u00A73%s\u00A7r> %s";
 
     public static String getPlayerJoinMessage(String username)
     {
