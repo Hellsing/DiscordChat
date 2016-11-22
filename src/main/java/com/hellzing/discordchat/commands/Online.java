@@ -1,6 +1,7 @@
 package com.hellzing.discordchat.commands;
 
 import com.hellzing.discordchat.discord.DiscordWrapper;
+import com.hellzing.discordchat.utils.MessageFormatter;
 import lombok.val;
 import net.dv8tion.jda.entities.User;
 import net.minecraft.server.MinecraftServer;
@@ -21,11 +22,6 @@ public class Online implements ICommand
     {
         val sb = new StringBuilder();
 
-        // Syntax highlighting
-        sb.append("```");
-        sb.append("diff");
-        sb.append(newLine);
-
         // Apply current player count
         sb.append(String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount()));
 
@@ -38,10 +34,7 @@ public class Online implements ICommand
             sb.append(MinecraftServer.getServer().getConfigurationManager().func_152609_b(false));
         }
 
-        // End syntax highlighting
-        sb.append("```");
-
         // Send message to discord channel
-        DiscordWrapper.getInstance().sendMessageToChannel(channel, sb.toString());
+        DiscordWrapper.getInstance().sendMessageToChannel(channel, MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
     }
 }

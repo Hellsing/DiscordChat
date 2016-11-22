@@ -1,7 +1,8 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.discord.DiscordWrapper;
-import com.hellzing.discordchat.utils.MiscUtils;
+import com.hellzing.discordchat.utils.MessageFormatter;
+import com.hellzing.discordchat.utils.Utility;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -9,6 +10,7 @@ import lombok.val;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AchievementEvent;
@@ -40,52 +42,54 @@ public class ForgeEventHandler
     @SubscribeEvent
     public void onServerChat(ServerChatEvent event)
     {
-        if (!MiscUtils.isMessageFromDiscord(event.message))
+        if (event.player != null)
         {
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.toDiscordMessage(event.username, event.message));
+            // Send the chat message to the Discord server
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getMinecraftToDiscordMessage(event.username, event.message));
         }
     }
 
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
-        if (DCConfig.sendPlayerDeathMessages && event.entityLiving instanceof EntityPlayer)
+        if (event.entityLiving instanceof EntityPlayer)
         {
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createDiscordDeathMessage((EntityPlayer) event.entityLiving));
+            // Send the death message to the Discord server
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText()));
         }
     }
 
     @SubscribeEvent
     public void onAchievement(AchievementEvent event)
     {
-        if (DCConfig.sendPlayerAchievementMessages && event.entityPlayer instanceof EntityPlayerMP)
+        if (event.entityPlayer instanceof EntityPlayerMP)
         {
             // Check if player has the achievement already or can't get it
-            val playerMP = (EntityPlayerMP) event.entityPlayer;
-            if (playerMP.func_147099_x().hasAchievementUnlocked(event.achievement) || !playerMP.func_147099_x().canUnlockAchievement(event.achievement))
+            val stats = ((EntityPlayerMP) event.entityPlayer).func_147099_x();
+            if (stats.hasAchievementUnlocked(event.achievement) || !stats.canUnlockAchievement(event.achievement))
             {
                 return;
             }
 
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createAchievementMessage(event.entityPlayer, event.achievement));
+            // Get achievement text
+            IChatComponent achievementText = event.achievement.func_150951_e();
+
+            // Send the achievement message to the Discord server
+            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));
         }
     }
 
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (DCConfig.sendPlayerJoinLeaveMessages)
-        {
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createLoggedInMessage(event.player));
-        }
+        // Send the join message to the Discord server
+        DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerJoinMessage(Utility.getPlayerName(event.player)));
     }
 
     @SubscribeEvent
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (DCConfig.sendPlayerJoinLeaveMessages)
-        {
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MiscUtils.createLoggedOutMessage(event.player));
-        }
+        // Send the leave message to the Discord server
+        DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerLeaveMessage(Utility.getPlayerName(event.player)));
     }
 }

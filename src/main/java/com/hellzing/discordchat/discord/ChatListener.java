@@ -1,7 +1,8 @@
 package com.hellzing.discordchat.discord;
 
 import com.hellzing.discordchat.DCCommands;
-import com.hellzing.discordchat.utils.MiscUtils;
+import com.hellzing.discordchat.utils.MessageFormatter;
+import com.hellzing.discordchat.utils.Utility;
 import lombok.val;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
@@ -12,7 +13,7 @@ public class ChatListener extends ListenerAdapter
     public void onGuildMessageReceived(GuildMessageReceivedEvent event)
     {
         // Only handle monitored channels
-        if (!event.getAuthor().isBot() && MiscUtils.shouldUseChannel(event.getChannel()))
+        if (!event.getAuthor().isBot() && Utility.isChannelMonitored(event.getChannel()))
         {
             // Handle commands
             if (event.getMessage().getContent().startsWith("!"))
@@ -29,14 +30,16 @@ public class ChatListener extends ListenerAdapter
                 val command = DCCommands.getInstance().getCommand(commandName);
                 if (command != null)
                 {
+                    // Execute command
                     command.doCommand(event.getAuthor(), event.getChannel().getName(), args);
+
+                    // Return code
+                    return;
                 }
             }
+
             // Handle regular messages
-            else
-            {
-                MiscUtils.sendMessage(MiscUtils.fromDiscordMessage(event.getMessage()));
-            }
+            Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(), event.getMessage().getContent()));
         }
     }
 }
