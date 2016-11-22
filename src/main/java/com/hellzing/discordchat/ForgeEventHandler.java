@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StringUtils;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AchievementEvent;
@@ -55,7 +56,8 @@ public class ForgeEventHandler
         if (event.entityLiving instanceof EntityPlayer)
         {
             // Send the death message to the Discord server
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText()));
+            DiscordWrapper.getInstance()
+                    .sendMessageToAllChannels(StringUtils.stripControlCodes(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
         }
     }
 

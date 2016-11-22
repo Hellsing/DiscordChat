@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.StringUtils;
 
 public class Utility
 {
@@ -44,6 +45,6 @@ public class Utility
     public static String getPlayerName(EntityPlayer player)
     {
         // Return the formatted Minecraft player name without color codes
-        return ScorePlayerTeam.formatPlayerName(player.getTeam(), player.getDisplayName().replaceAll("§[0-9a-fk-or]", ""));
+        return StringUtils.stripControlCodes(ScorePlayerTeam.formatPlayerName(player.getTeam(), player.getDisplayName()));
     }
 }
