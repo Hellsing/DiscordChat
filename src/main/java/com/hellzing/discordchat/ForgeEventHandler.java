@@ -55,7 +55,8 @@ public class ForgeEventHandler
         if (event.entityLiving instanceof EntityPlayer)
         {
             // Send the death message to the Discord server
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText()));
+            DiscordWrapper.getInstance()
+                    .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
         }
     }
 
