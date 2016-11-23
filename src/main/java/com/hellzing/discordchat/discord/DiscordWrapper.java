@@ -7,6 +7,9 @@ import lombok.val;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.exceptions.RateLimitedException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.LoginException;
 import java.util.Optional;
@@ -17,6 +20,8 @@ public class DiscordWrapper implements Runnable
 
     @Getter
     private static DiscordWrapper instance;
+
+    public static Logger log = LogManager.getLogger(DiscordChat.modId);
 
     public JDA jda;
 
@@ -82,22 +87,32 @@ public class DiscordWrapper implements Runnable
 
     public void sendMessageToAllChannels(String message)
     {
-        for (val name : DCConfig.channels)
+        for (val channelName : DCConfig.channels)
         {
-            val channel = getChannel(name);
-            if (channel.isPresent())
-            {
-                channel.get().sendMessage(message);
-            }
+            sendMessageToChannel(channelName, message);
         }
     }
 
     public void sendMessageToChannel(String channelName, String message)
     {
-        val channel = getChannel(channelName);
-        if (channel.isPresent())
+        try
         {
-            channel.get().sendMessage(message);
+            val channel = getChannel(channelName);
+            if (channel.isPresent())
+            {
+                channel.get().sendMessage(message);
+            }
+        }
+        catch (RateLimitedException e)
+        {
+            log.warn("Discord chat rate limit exceeded, try again in " + e.getAvailTime() + "ms");
+        }
+        catch (Exception e)
+        {
+            log.warn("An error occurred while trying to send a text message to a discord channel named: " + channelName);
+            log.warn("Message content:\r\n" + message);
+            log.warn("Exception stacktrace:");
+            e.printStackTrace();
         }
     }
 
