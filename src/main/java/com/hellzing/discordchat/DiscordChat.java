@@ -2,6 +2,7 @@ package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.Online;
 import com.hellzing.discordchat.data.Config;
+import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -38,6 +39,10 @@ public class DiscordChat
     {
         try
         {
+            // Create data holding classes instances
+            Config.getInstance();
+            Messages.getInstance();
+
             // Check if mod is enabled
             if (Config.getInstance().isEnabled())
             {

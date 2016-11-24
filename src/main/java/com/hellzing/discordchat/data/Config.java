@@ -23,7 +23,7 @@ public class Config
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Getter(lazy = true)
-    private static final Config instance = parseConfigFile();
+    private static final Config instance = loadConfigFile();
 
     @Getter
     @Expose
@@ -42,9 +42,9 @@ public class Config
     @SerializedName("Monitored Channels")
     private String[] monitoredChannels = new String[] { "minecraft", "feed-the-beast", "technic-pack", "forge-server" };
 
-    private static Config parseConfigFile()
+    private static Config loadConfigFile()
     {
-        // Create a new dummy config object
+        // Create config file instance
         Config config = new Config();
 
         try
@@ -64,7 +64,12 @@ public class Config
 
             // Parse the config
             val configJson = FileUtils.readFileToString(configFile, "utf-8");
-            config = gson.fromJson(configJson, Config.class);
+            val parsedConfig = gson.fromJson(configJson, Config.class);
+            if (parsedConfig != null)
+            {
+                // Apply parsed config object
+                config = parsedConfig;
+            }
 
             // Save the config back to file
             FileUtils.writeStringToFile(configFile, gson.toJson(config));
@@ -74,7 +79,7 @@ public class Config
             DiscordChat.getLogger().error("Failed to parse config from file", e);
         }
 
-        // Return the config
+        // Apply instance
         return config;
     }
 
