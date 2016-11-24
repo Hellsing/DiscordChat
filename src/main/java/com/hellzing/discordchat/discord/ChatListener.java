@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.discord;
 
-import com.hellzing.discordchat.DCCommands;
+import com.hellzing.discordchat.commands.Commands;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
 import lombok.val;
@@ -27,7 +27,7 @@ public class ChatListener extends ListenerAdapter
                     args = msg.substring(msg.indexOf(" ")).split(" ");
                 }
 
-                val command = DCCommands.getInstance().getCommand(commandName);
+                val command = Commands.getInstance().getCommand(commandName);
                 if (command != null)
                 {
                     // Execute command

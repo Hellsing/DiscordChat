@@ -1,5 +1,6 @@
 package com.hellzing.discordchat;
 
+import com.hellzing.discordchat.commands.Commands;
 import com.hellzing.discordchat.commands.Online;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -50,7 +51,7 @@ public class DiscordChat
                 FMLCommonHandler.instance().bus().register(eventHandler);
 
                 // Register commands
-                DCCommands.getInstance().registerCommand(new Online());
+                Commands.getInstance().registerCommand(new Online());
 
                 try
                 {

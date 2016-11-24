@@ -1,21 +1,20 @@
-package com.hellzing.discordchat;
+package com.hellzing.discordchat.commands;
 
-import com.hellzing.discordchat.commands.ICommand;
 import lombok.Getter;
 import lombok.val;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class DCCommands
+public class Commands
 {
     @Getter
-    private static final DCCommands instance = new DCCommands();
+    private static final Commands instance = new Commands();
 
     private HashSet<ICommand> commands = new HashSet<>();
 
     // Make constructor private to prevent multiple instantiations
-    private DCCommands()
+    private Commands()
     {
     }
 
