@@ -1,6 +1,7 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.Online;
+import com.hellzing.discordchat.commands.Reload;
 import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
@@ -53,6 +54,7 @@ public class DiscordChat
 
                 // Register commands
                 Commands.getInstance().registerCommand(new Online());
+                Commands.getInstance().registerCommand(new Reload());
 
                 // Start DiscordWrapper wrapper
                 logger.info("Connecting to the DiscordWrapper server...");

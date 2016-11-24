@@ -1,8 +1,9 @@
 package com.hellzing.discordchat.commands;
 
-import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
+import lombok.Getter;
 import lombok.val;
+import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
 import net.minecraft.server.MinecraftServer;
 
@@ -11,14 +12,15 @@ public class Online implements ICommand
     private static final String onlineFormat = "--- Currently Online: %1$d ---";
     private static final String newLine = System.getProperty("line.separator");
 
-    @Override
-    public String[] getCommandAliases()
-    {
-        return new String[] { "online" };
-    }
+    @Getter
+    private ChannelType channelType = ChannelType.BOTH;
+    @Getter
+    private PermissionType permissionType = PermissionType.EVERYONE;
+    @Getter
+    private String[] commandAliases = new String[] { "online", "on" };
 
     @Override
-    public boolean doCommand(User sender, String channel, String[] args)
+    public boolean doCommand(User sender, MessageChannel channel, String[] args)
     {
         val sb = new StringBuilder();
 
@@ -35,7 +37,7 @@ public class Online implements ICommand
         }
 
         // Send message to discord channel
-        DiscordWrapper.getInstance().sendMessageToChannel(channel, MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
+        channel.sendMessage(MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
 
         return true;
     }

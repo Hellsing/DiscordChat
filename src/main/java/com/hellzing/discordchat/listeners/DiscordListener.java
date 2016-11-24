@@ -1,10 +1,13 @@
 package com.hellzing.discordchat.listeners;
 
 import com.hellzing.discordchat.Commands;
+import com.hellzing.discordchat.DiscordChat;
+import com.hellzing.discordchat.commands.ICommand;
+import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
 import lombok.val;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.minecraft.server.MinecraftServer;
 
@@ -14,11 +17,22 @@ public class DiscordListener extends ListenerAdapter
     private static final String blankSpace = " ";
 
     @Override
-    public void onGuildMessageReceived(GuildMessageReceivedEvent event)
+    public void onMessageReceived(MessageReceivedEvent event)
     {
-        // Only handle monitored channels
-        if (!event.getAuthor().isBot() && Utility.isChannelMonitored(event.getChannel()))
+        try
         {
+            // Ignore bot messages
+            if (event.getAuthor().isBot())
+            {
+                return;
+            }
+
+            // Ignore non-monitored channels
+            if (!event.isPrivate() && !Utility.isChannelMonitored(event.getTextChannel()))
+            {
+                return;
+            }
+
             // Handle commands
             if (event.getMessage().getContent().startsWith(commandPrefix))
             {
@@ -34,24 +48,58 @@ public class DiscordListener extends ListenerAdapter
                 val command = Commands.getInstance().getCommand(commandName);
                 if (command != null)
                 {
-                    // Execute command
-                    val result = command.doCommand(event.getAuthor(), event.getChannel().getName(), args);
-
-                    // Return method if result was true
-                    if (result)
+                    // Check command type
+                    if (command.getChannelType() == ICommand.ChannelType.BOTH
+                            || command.getChannelType() == ICommand.ChannelType.PRIVATE && event.isPrivate()
+                            || command.getChannelType() == ICommand.ChannelType.GUILD && !event.isPrivate())
                     {
-                        return;
+                        if (command.getPermissionType() == ICommand.PermissionType.EVERYONE
+                                || (command.getPermissionType() == ICommand.PermissionType.OWNER
+                                || command.getPermissionType() == ICommand.PermissionType.ADMIN) && event.getAuthor().equals(DiscordWrapper.getInstance().getServerOwner())
+                                || command.getPermissionType() == ICommand.PermissionType.ADMIN && DiscordWrapper.getInstance().getServerAdmins().contains(event.getAuthor()))
+                        {
+                            // Execute command
+                            val result = command.doCommand(event.getAuthor(), event.getChannel(), args);
+
+                            // Return method if result was true
+                            if (result)
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            // Announce permission error
+                            event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: You don't have the required permission to run this command!"));
+                        }
+                    }
+                    else
+                    {
+                        if (event.isPrivate())
+                        {
+                            // Notify our private chat friend
+                            event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: This command does not work in this channel!"));
+                        }
                     }
                 }
             }
 
-            // Check if there are players online
-            if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
+            // Handle public messages
+            if (!event.isPrivate())
             {
-                // Send the message to the Minecraft server (without color codes)
-                Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(), Utility.stripMinecraftColors(event.getMessage().getContent())));
+                // Check if there are players online
+                if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
+                {
+                    // Send the message to the Minecraft server (without color codes)
+                    Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(),
+                                                                                            Utility.stripMinecraftColors(event.getMessage().getContent())));
 
+                }
             }
+        }
+        catch (Exception e)
+        {
+            DiscordChat.getLogger().error("Error while trying to handle received message, content: " + event.getMessage().getContent(), e);
         }
     }
 }

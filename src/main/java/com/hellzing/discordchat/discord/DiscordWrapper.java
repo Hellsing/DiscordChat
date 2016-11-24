@@ -1,16 +1,20 @@
 package com.hellzing.discordchat.discord;
 
-import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.DiscordChat;
+import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.listeners.DiscordListener;
 import lombok.Getter;
 import lombok.val;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 
 public class DiscordWrapper implements Runnable
@@ -134,5 +138,28 @@ public class DiscordWrapper implements Runnable
     private Optional<TextChannel> getChannel(String channelName)
     {
         return jda.getGuildById(Config.getInstance().getServerId()).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
+    }
+
+    public User getServerOwner()
+    {
+        return jda.getGuildById(Config.getInstance().getServerId()).getOwner();
+    }
+
+    public List<User> getServerAdmins()
+    {
+        val admins = new HashSet<User>();
+
+        for (val role : jda.getGuildById(Config.getInstance().getServerId()).getRoles())
+        {
+            if (role.getPermissions().stream().anyMatch(perm -> perm.name().toLowerCase().contains("admin")))
+            {
+                for (val user : jda.getGuildById(Config.getInstance().getServerId()).getUsersWithRole(role))
+                {
+                    admins.add(user);
+                }
+            }
+        }
+
+        return new ArrayList<>(admins);
     }
 }
