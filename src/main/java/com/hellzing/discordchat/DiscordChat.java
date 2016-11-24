@@ -36,27 +36,27 @@ public class DiscordChat
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
     {
-        // Check if mod is enabled
-        if (Config.getInstance().isEnabled())
+        try
         {
-            // Register forge event handlers
-            val eventHandler = new ForgeListener();
-            MinecraftForge.EVENT_BUS.register(eventHandler);
-            FMLCommonHandler.instance().bus().register(eventHandler);
-
-            // Register commands
-            Commands.getInstance().registerCommand(new Online());
-
-            try
+            // Check if mod is enabled
+            if (Config.getInstance().isEnabled())
             {
+                // Register forge event handlers
+                val eventHandler = new ForgeListener();
+                MinecraftForge.EVENT_BUS.register(eventHandler);
+                FMLCommonHandler.instance().bus().register(eventHandler);
+
+                // Register commands
+                Commands.getInstance().registerCommand(new Online());
+
                 // Start DiscordWrapper wrapper
                 logger.info("Connecting to the DiscordWrapper server...");
                 DiscordWrapper.initialize();
             }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception e)
+        {
+            logger.error("An exception occurred while initializing " + modId, e);
         }
     }
 
