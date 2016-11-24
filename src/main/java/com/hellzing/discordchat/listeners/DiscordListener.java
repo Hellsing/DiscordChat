@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.listeners;
 
-import com.hellzing.discordchat.commands.Commands;
+import com.hellzing.discordchat.Commands;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
 import lombok.val;

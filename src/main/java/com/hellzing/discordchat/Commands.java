@@ -1,5 +1,6 @@
-package com.hellzing.discordchat.commands;
+package com.hellzing.discordchat;
 
+import com.hellzing.discordchat.commands.ICommand;
 import lombok.Getter;
 import lombok.val;
 

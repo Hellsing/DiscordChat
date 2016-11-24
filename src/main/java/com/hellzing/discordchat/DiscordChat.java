@@ -1,6 +1,5 @@
 package com.hellzing.discordchat;
 
-import com.hellzing.discordchat.commands.Commands;
 import com.hellzing.discordchat.commands.Online;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
