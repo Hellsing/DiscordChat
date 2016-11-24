@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.utils;
 
-import com.hellzing.discordchat.Config;
+import com.hellzing.discordchat.data.Config;
 import lombok.val;
 import net.dv8tion.jda.entities.TextChannel;
 import net.minecraft.entity.player.EntityPlayer;

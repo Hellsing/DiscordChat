@@ -1,9 +1,10 @@
-package com.hellzing.discordchat;
+package com.hellzing.discordchat.data;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.hellzing.discordchat.DiscordChat;
 import lombok.Getter;
 import lombok.val;
 import org.apache.commons.io.FileUtils;
@@ -12,7 +13,12 @@ import java.io.File;
 
 public class Config
 {
-    private static final File configFile = new File(DiscordChat.getModConfigDirectory().getAbsolutePath() + File.separatorChar + DiscordChat.modId + ".json");
+    // Resulting file: Minecraft\config\DiscordChat\DiscordChat.json
+    @Getter
+    private static final File configFile = new File(DiscordChat.getModConfigDirectory().getAbsolutePath() + File.separatorChar + DiscordChat.modId + File.separatorChar + DiscordChat.modId + ".json");
+    // Resulting folder: Minecraft\config\DiscordChat
+    @Getter
+    private static final File configFolder = configFile.getParentFile();
     @Getter
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -46,6 +52,13 @@ public class Config
             // Check if a config file exists
             if (!configFile.exists())
             {
+                if (!configFolder.exists())
+                {
+                    // Create directory structure
+                    configFolder.mkdirs();
+                }
+
+                // Create file within directory
                 configFile.createNewFile();
             }
 

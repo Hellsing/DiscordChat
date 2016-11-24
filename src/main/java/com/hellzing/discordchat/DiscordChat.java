@@ -1,6 +1,7 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.Online;
+import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
 import cpw.mods.fml.common.FMLCommonHandler;

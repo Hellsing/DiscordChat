@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.discord;
 
-import com.hellzing.discordchat.Config;
+import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.listeners.DiscordListener;
 import lombok.Getter;
