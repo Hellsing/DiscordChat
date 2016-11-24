@@ -1,4 +1,4 @@
-package com.hellzing.discordchat.discord;
+package com.hellzing.discordchat.listeners;
 
 import com.hellzing.discordchat.commands.Commands;
 import com.hellzing.discordchat.utils.MessageFormatter;
@@ -7,7 +7,7 @@ import lombok.val;
 import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
 
-public class ChatListener extends ListenerAdapter
+public class DiscordListener extends ListenerAdapter
 {
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event)

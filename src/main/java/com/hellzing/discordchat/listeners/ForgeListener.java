@@ -1,4 +1,4 @@
-package com.hellzing.discordchat;
+package com.hellzing.discordchat.listeners;
 
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
@@ -15,7 +15,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AchievementEvent;
 
-public class ForgeEventHandler
+public class ForgeListener
 {
     private static final String onlineFormat = "%1$d/%2$d currently";
     private static long lastUpdate;

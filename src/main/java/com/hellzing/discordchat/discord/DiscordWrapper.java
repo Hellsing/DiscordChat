@@ -2,6 +2,7 @@ package com.hellzing.discordchat.discord;
 
 import com.hellzing.discordchat.DCConfig;
 import com.hellzing.discordchat.DiscordChat;
+import com.hellzing.discordchat.listeners.DiscordListener;
 import lombok.Getter;
 import lombok.val;
 import net.dv8tion.jda.JDA;
@@ -52,7 +53,7 @@ public class DiscordWrapper implements Runnable
         try
         {
             // Build up DiscordWrapper connection
-            jda = new JDABuilder().setBotToken(DCConfig.botToken).addListener(new ChatListener()).buildBlocking();
+            jda = new JDABuilder().setBotToken(DCConfig.botToken).addListener(new DiscordListener()).buildBlocking();
 
             // Get handled server
             val server = jda.getGuildById(DCConfig.serverId);

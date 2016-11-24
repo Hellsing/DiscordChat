@@ -3,6 +3,7 @@ package com.hellzing.discordchat;
 import com.hellzing.discordchat.commands.Commands;
 import com.hellzing.discordchat.commands.Online;
 import com.hellzing.discordchat.discord.DiscordWrapper;
+import com.hellzing.discordchat.listeners.ForgeListener;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
@@ -46,7 +47,7 @@ public class DiscordChat
             if (DCConfig.enabled)
             {
                 // Register forge event handlers
-                val eventHandler = new ForgeEventHandler();
+                val eventHandler = new ForgeListener();
                 MinecraftForge.EVENT_BUS.register(eventHandler);
                 FMLCommonHandler.instance().bus().register(eventHandler);
 
