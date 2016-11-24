@@ -6,5 +6,5 @@ public interface ICommand
 {
     String[] getCommandAliases();
 
-    void doCommand(User sender, String channel, String[] args);
+    boolean doCommand(User sender, String channel, String[] args);
 }

@@ -18,7 +18,7 @@ public class Online implements ICommand
     }
 
     @Override
-    public void doCommand(User sender, String channel, String[] args)
+    public boolean doCommand(User sender, String channel, String[] args)
     {
         val sb = new StringBuilder();
 
@@ -36,5 +36,7 @@ public class Online implements ICommand
 
         // Send message to discord channel
         DiscordWrapper.getInstance().sendMessageToChannel(channel, MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
+
+        return true;
     }
 }

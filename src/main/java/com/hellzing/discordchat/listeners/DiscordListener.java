@@ -35,10 +35,13 @@ public class DiscordListener extends ListenerAdapter
                 if (command != null)
                 {
                     // Execute command
-                    command.doCommand(event.getAuthor(), event.getChannel().getName(), args);
+                    val result = command.doCommand(event.getAuthor(), event.getChannel().getName(), args);
 
-                    // Return code
-                    return;
+                    // Return method if result was true
+                    if (result)
+                    {
+                        return;
+                    }
                 }
             }
 
