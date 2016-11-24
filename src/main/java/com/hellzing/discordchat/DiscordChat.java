@@ -35,39 +35,30 @@ public class DiscordChat
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
     {
-        // Initialize setup config
-        DCPrivateProps.init(modConfigDirectory);
-        if (DCPrivateProps.setup)
-        {
-            // Initialize main config
-            DCConfig.init(modConfigDirectory);
+        // Initialize main config
+        DCConfig.init(modConfigDirectory);
 
-            // Check if mod is enabled
-            if (DCConfig.enabled)
+        // Check if mod is enabled
+        if (DCConfig.enabled)
+        {
+            // Register forge event handlers
+            val eventHandler = new ForgeListener();
+            MinecraftForge.EVENT_BUS.register(eventHandler);
+            FMLCommonHandler.instance().bus().register(eventHandler);
+
+            // Register commands
+            Commands.getInstance().registerCommand(new Online());
+
+            try
             {
-                // Register forge event handlers
-                val eventHandler = new ForgeListener();
-                MinecraftForge.EVENT_BUS.register(eventHandler);
-                FMLCommonHandler.instance().bus().register(eventHandler);
-
-                // Register commands
-                Commands.getInstance().registerCommand(new Online());
-
-                try
-                {
-                    // Start DiscordWrapper wrapper
-                    logger.info("Connecting to the DiscordWrapper server...");
-                    DiscordWrapper.initialize();
-                }
-                catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                // Start DiscordWrapper wrapper
+                logger.info("Connecting to the DiscordWrapper server...");
+                DiscordWrapper.initialize();
             }
-        }
-        else
-        {
-            logger.warn("Mod not configured! Set 'setup=true' in DiscordChat.private when done!");
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
