@@ -20,7 +20,7 @@ public class Online implements ICommand
     private String[] commandAliases = new String[] { "online", "on" };
 
     @Override
-    public boolean doCommand(User sender, MessageChannel channel, String[] args)
+    public boolean execute(User sender, MessageChannel channel, String[] args)
     {
         val sb = new StringBuilder();
 

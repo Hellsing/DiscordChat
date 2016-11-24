@@ -21,5 +21,5 @@ public interface ICommand
 
     String[] getCommandAliases();
 
-    boolean doCommand(User sender, MessageChannel channel, String[] args);
+    boolean execute(User sender, MessageChannel channel, String[] args);
 }

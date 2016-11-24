@@ -59,7 +59,7 @@ public class DiscordListener extends ListenerAdapter
                                 || command.getPermissionType() == ICommand.PermissionType.ADMIN && DiscordWrapper.getInstance().getServerAdmins().contains(event.getAuthor()))
                         {
                             // Execute command
-                            val result = command.doCommand(event.getAuthor(), event.getChannel(), args);
+                            val result = command.execute(event.getAuthor(), event.getChannel(), args);
 
                             // Return method if result was true
                             if (result)

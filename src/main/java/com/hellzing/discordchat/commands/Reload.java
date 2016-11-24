@@ -14,7 +14,7 @@ public class Reload implements ICommand
     private String[] commandAliases = new String[] { "reload", "rl" };
 
     @Override
-    public boolean doCommand(User sender, MessageChannel channel, String[] args)
+    public boolean execute(User sender, MessageChannel channel, String[] args)
     {
         channel.sendMessage("Reloaded!");
         return true;
