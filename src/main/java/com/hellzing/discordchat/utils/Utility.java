@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.utils;
 
-import com.hellzing.discordchat.DCConfig;
+import com.hellzing.discordchat.Config;
 import lombok.val;
 import net.dv8tion.jda.entities.TextChannel;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +17,7 @@ public class Utility
      */
     public static boolean isChannelMonitored(TextChannel channel)
     {
-        for (String s : DCConfig.channels)
+        for (String s : Config.getInstance().getMonitoredChannels())
         {
             if (channel.getName().equalsIgnoreCase(s))
             {

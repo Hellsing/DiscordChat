@@ -1,6 +1,6 @@
 package com.hellzing.discordchat.discord;
 
-import com.hellzing.discordchat.DCConfig;
+import com.hellzing.discordchat.Config;
 import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.listeners.DiscordListener;
 import lombok.Getter;
@@ -53,14 +53,13 @@ public class DiscordWrapper implements Runnable
         try
         {
             // Build up DiscordWrapper connection
-            jda = new JDABuilder().setBotToken(DCConfig.botToken).addListener(new DiscordListener()).buildBlocking();
+            jda = new JDABuilder().setBotToken(Config.getInstance().getBotToken()).addListener(new DiscordListener()).buildBlocking();
 
             // Get handled server
-            val server = jda.getGuildById(DCConfig.serverId);
+            val server = jda.getGuildById(Config.getInstance().getServerId());
             if (server == null)
             {
                 DiscordChat.getLogger().error("Couldn't get the server with the specified ID, please check the config and ensure the ID is correct.");
-                DCConfig.enabled = false;
                 return;
             }
             else
@@ -73,21 +72,19 @@ public class DiscordWrapper implements Runnable
         {
             DiscordChat.getLogger().error("Invalid login credentials for DiscordWrapper, disabling DiscordChat");
             e.printStackTrace();
-            DCConfig.enabled = false;
             return;
         }
         catch (InterruptedException e)
         {
             DiscordChat.getLogger().error("Couldn't complete login, disabling DiscordChat");
             e.printStackTrace();
-            DCConfig.enabled = false;
             return;
         }
     }
 
     public void sendMessageToAllChannels(String message)
     {
-        for (val channelName : DCConfig.channels)
+        for (val channelName : Config.getInstance().getMonitoredChannels())
         {
             sendMessageToChannel(channelName, message);
         }
@@ -136,6 +133,6 @@ public class DiscordWrapper implements Runnable
 
     private Optional<TextChannel> getChannel(String channelName)
     {
-        return jda.getGuildById(DCConfig.serverId).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
+        return jda.getGuildById(Config.getInstance().getServerId()).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
     }
 }

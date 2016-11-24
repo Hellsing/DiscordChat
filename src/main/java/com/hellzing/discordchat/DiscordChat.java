@@ -35,11 +35,8 @@ public class DiscordChat
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartingEvent event)
     {
-        // Initialize main config
-        DCConfig.init(modConfigDirectory);
-
         // Check if mod is enabled
-        if (DCConfig.enabled)
+        if (Config.getInstance().isEnabled())
         {
             // Register forge event handlers
             val eventHandler = new ForgeListener();
