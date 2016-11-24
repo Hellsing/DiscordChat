@@ -23,7 +23,7 @@ public class ForgeEventHandler
     @SubscribeEvent
     public void onTick(TickEvent.ServerTickEvent event)
     {
-        if (System.currentTimeMillis() - lastUpdate > 5000)
+        if (System.currentTimeMillis() - lastUpdate > 1000)
         {
             lastUpdate = System.currentTimeMillis();
 
@@ -34,8 +34,8 @@ public class ForgeEventHandler
                 gameName = String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount(), MinecraftServer.getServer().getMaxPlayers());
             }
 
-            // Apply game
-            DiscordWrapper.getInstance().jda.getAccountManager().setGame(gameName);
+            // Apply the custom game
+            DiscordWrapper.getInstance().setCurrentGame(gameName);
         }
     }
 

@@ -38,8 +38,8 @@ public class ChatListener extends ListenerAdapter
                 }
             }
 
-            // Handle regular messages
-            Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(), event.getMessage().getContent()));
+            // Send the message to the Minecraft server (without color codes)
+            Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(), Utility.stripMinecraftColors(event.getMessage().getContent())));
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.hellzing.discordchat;
 
 import com.hellzing.discordchat.commands.ICommand;
+import lombok.Getter;
 import lombok.val;
 
 import java.util.Arrays;
@@ -8,22 +9,21 @@ import java.util.HashSet;
 
 public class DCCommands
 {
-    private static DCCommands instance = null;
+    @Getter
+    private static final DCCommands instance = new DCCommands();
+
     private HashSet<ICommand> commands = new HashSet<>();
 
+    // Make constructor private to prevent multiple instantiations
     private DCCommands()
     {
     }
 
-    public static DCCommands getInstance()
-    {
-        if (instance == null)
-        {
-            instance = new DCCommands();
-        }
-        return instance;
-    }
-
+    /**
+     * Get a command matching the name.
+     * @param name The name to match.
+     * @return The found command or null when not found.
+     */
     public ICommand getCommand(String name)
     {
         for (val command : commands)
@@ -36,6 +36,10 @@ public class DCCommands
         return null;
     }
 
+    /**
+     * Registers a new command handler.
+     * @param instance The command instance to register.
+     */
     public void registerCommand(ICommand instance)
     {
         commands.add(instance);

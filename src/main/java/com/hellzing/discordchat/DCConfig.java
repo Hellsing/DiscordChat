@@ -34,8 +34,8 @@ public class DCConfig
         ConfigManager.instance.load(DiscordChat.modId);
         if (botToken.isEmpty() || serverId.isEmpty() || Arrays.equals(channels, new String[0]))
         {
-            DiscordChat.log.warn("Missing required information, disabling DiscordChat");
-            DiscordChat.log.warn("Please go to config/shadowfacts/DiscordChat.cfg and fill out the required fields and restart Minecraft to enable DiscordChat");
+            DiscordChat.getLogger().warn("Missing required information, disabling DiscordChat");
+            DiscordChat.getLogger().warn("Please go to config/shadowfacts/DiscordChat.cfg and fill out the required fields and restart Minecraft to enable DiscordChat");
             enabled = false;
         }
     }

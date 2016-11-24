@@ -8,33 +8,32 @@ import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.exceptions.RateLimitedException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.security.auth.login.LoginException;
 import java.util.Optional;
 
 public class DiscordWrapper implements Runnable
 {
-    private static Thread thread;
+    private static Thread discordThread;
 
     @Getter
     private static DiscordWrapper instance;
 
-    public static Logger log = LogManager.getLogger(DiscordChat.modId);
-
-    public JDA jda;
+    @Getter
+    private JDA jda;
+    @Getter
+    private String currentGame;
 
     public static void initialize() throws Exception
     {
-        if (thread == null)
+        if (discordThread == null)
         {
-            thread = new Thread(new DiscordWrapper());
-            thread.run();
+            discordThread = new Thread(new DiscordWrapper());
+            discordThread.run();
         }
         else
         {
-            DiscordChat.log.error("JDA thread is already running!");
+            DiscordChat.getLogger().error("JDA thread is already running!");
         }
     }
 
@@ -59,7 +58,7 @@ public class DiscordWrapper implements Runnable
             val server = jda.getGuildById(DCConfig.serverId);
             if (server == null)
             {
-                DiscordChat.log.error("Couldn't get the server with the specified ID, please check the config and ensure the ID is correct.");
+                DiscordChat.getLogger().error("Couldn't get the server with the specified ID, please check the config and ensure the ID is correct.");
                 DCConfig.enabled = false;
                 return;
             }
@@ -71,14 +70,14 @@ public class DiscordWrapper implements Runnable
         }
         catch (LoginException | IllegalArgumentException e)
         {
-            DiscordChat.log.error("Invalid login credentials for DiscordWrapper, disabling DiscordChat");
+            DiscordChat.getLogger().error("Invalid login credentials for DiscordWrapper, disabling DiscordChat");
             e.printStackTrace();
             DCConfig.enabled = false;
             return;
         }
         catch (InterruptedException e)
         {
-            DiscordChat.log.error("Couldn't complete login, disabling DiscordChat");
+            DiscordChat.getLogger().error("Couldn't complete login, disabling DiscordChat");
             e.printStackTrace();
             DCConfig.enabled = false;
             return;
@@ -105,14 +104,32 @@ public class DiscordWrapper implements Runnable
         }
         catch (RateLimitedException e)
         {
-            log.warn("Discord chat rate limit exceeded, try again in " + e.getAvailTime() + "ms");
+            DiscordChat.getLogger().warn("Discord chat rate limit exceeded, try again in " + e.getAvailTime() + "ms");
         }
         catch (Exception e)
         {
-            log.warn("An error occurred while trying to send a text message to a discord channel named: " + channelName);
-            log.warn("Message content:\r\n" + message);
-            log.warn("Exception stacktrace:");
-            e.printStackTrace();
+            DiscordChat.getLogger().error("An error occurred while trying to send a text message to a discord channel.\r\nChannel name: " + channelName + " | Message:\r\n" + message, e);
+        }
+    }
+
+    /**
+     * Applies a custom name as currently playing game.
+     * @param gameName The desired game name.
+     */
+    public void setCurrentGame(String gameName)
+    {
+        if (currentGame == null || !currentGame.equals(gameName))
+        {
+            try
+            {
+                // Apply game
+                currentGame = gameName;
+                jda.getAccountManager().setGame(gameName);
+            }
+            catch (Exception e)
+            {
+                DiscordChat.getLogger().error("An error occurred while trying to set a new active game: " + gameName, e);
+            }
         }
     }
 

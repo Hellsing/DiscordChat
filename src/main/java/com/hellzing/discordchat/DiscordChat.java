@@ -7,6 +7,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import lombok.Getter;
 import lombok.val;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
@@ -18,8 +19,9 @@ public class DiscordChat
     public static final String modId = "DiscordChat";
     public static final String version = "2.0.0";
 
-    public static Logger log = LogManager.getLogger(modId);
-
+    @Getter
+    private static Logger logger = LogManager.getLogger(modId);
+    @Getter
     private static java.io.File modConfigDirectory;
 
     @Mod.EventHandler
@@ -53,7 +55,7 @@ public class DiscordChat
                 try
                 {
                     // Start DiscordWrapper wrapper
-                    log.info("Connecting to the DiscordWrapper server...");
+                    logger.info("Connecting to the DiscordWrapper server...");
                     DiscordWrapper.initialize();
                 }
                 catch (Exception e)
@@ -64,7 +66,7 @@ public class DiscordChat
         }
         else
         {
-            log.warn("Mod not configured! Set 'setup=true' in DiscordChat.private when done!");
+            logger.warn("Mod not configured! Set 'setup=true' in DiscordChat.private when done!");
         }
     }
 
@@ -72,6 +74,6 @@ public class DiscordChat
     public void onServerStopping(FMLServerStoppingEvent event)
     {
         // Shutdown DiscordWrapper wrapper
-        DiscordWrapper.getInstance().jda.shutdown();
+        DiscordWrapper.getInstance().getJda().shutdown();
     }
 }
