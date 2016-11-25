@@ -57,7 +57,7 @@ public class DiscordChat
                 Commands.getInstance().registerCommand(new Reload());
 
                 // Start DiscordWrapper wrapper
-                logger.info("Connecting to the DiscordWrapper server...");
+                logger.info("Connecting to Discord...");
                 DiscordWrapper.initialize();
             }
         }

@@ -12,37 +12,37 @@ public class MessageFormatter
 
     public static String getPlayerJoinMessage(String username)
     {
-        return getDiscordCodeBlock(defaultSyntax, String.format(Messages.getInstance().getPlayerJoinFormat(), username));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerJoin().format(username));
     }
 
     public static String getPlayerLeaveMessage(String username)
     {
-        return getDiscordCodeBlock(defaultSyntax, String.format(Messages.getInstance().getPlayerLeaveFormat(), username));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerLeave().format(username));
     }
 
     public static String getPlayerAchievementMessage(String username, String achievementName)
     {
-        return getDiscordCodeBlock("", String.format(Messages.getInstance().getPlayerAchievementFormat(), username, achievementName));
+        return getDiscordCodeBlock("", Messages.getInstance().getPlayerAchievement().format(username, achievementName));
     }
 
     public static String getPlayerDeathMessage(String deathMessage)
     {
-        return getDiscordCodeBlock(defaultSyntax, String.format(Messages.getInstance().getPlayerDeathFormat(), deathMessage));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerDeath().format(deathMessage));
     }
 
     public static String getPlayerBossKilledMessage(String dimensionName, String playerName, String bossName)
     {
-        return getDiscordCodeBlock(defaultSyntax, String.format(Messages.getInstance().getPlayerBossKilledFormat(), dimensionName, playerName, bossName));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerBossKilled().format(dimensionName, playerName, bossName));
     }
 
     public static String getMinecraftToDiscordMessage(String username, String message)
     {
-        return String.format(Messages.getInstance().getMinecraftChatFormat(), username, message);
+        return Messages.getInstance().getMinecraftChat().format(username, message);
     }
 
     public static String getDiscordToMinecraftMessage(String username, String message)
     {
-        return String.format(Messages.getInstance().getDiscordChatFormat(), username, message);
+        return Messages.getInstance().getDiscordChat().format(username, message);
     }
 
     public static String getDiscordCodeBlock(String syntax, String text)

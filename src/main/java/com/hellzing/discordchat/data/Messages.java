@@ -4,7 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.utils.MessageFormatter;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import org.apache.commons.io.FileUtils;
 
@@ -18,34 +20,60 @@ public class Messages
     @Getter(lazy = true)
     private static final Messages instance = loadConfigFile();
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Message extends ToggleableBase
+    {
+        @Getter
+        @Expose
+        @SerializedName("Format")
+        protected String messageFormat = "";
+
+        /**
+         * Formats the message just like String.format()
+         * @param args The args to use for the format string.
+         * @return The formatted string.
+         */
+        public String format(Object... args)
+        {
+            return String.format(messageFormat, args);
+        }
+    }
+
     @Getter
     @Expose
     @SerializedName("(Discord) Player joins Minecraft server")
-    private String playerJoinFormat = "+ %s joined the Minecraft server.";
+    private Message playerJoin = new Message("+ %s joined the Minecraft server.");
+
     @Getter
     @Expose
     @SerializedName("(Discord) Player leaves Minecraft server")
-    private String playerLeaveFormat = "- %s left the Minecraft server.";
+    private Message playerLeave = new Message("- %s left the Minecraft server.");
+
     @Getter
     @Expose
     @SerializedName("(Discord) Player got achievement")
-    private String playerAchievementFormat = "%s has just earned the achievement [%s]";
+    private Message playerAchievement = new Message("%s has just earned the achievement [%s]");
+
     @Getter
     @Expose
     @SerializedName("(Discord) Player death")
-    private String playerDeathFormat = "- DEATH -" + MessageFormatter.getNewLine() + "%s";
+    private Message playerDeath = new Message("- DEATH -" + MessageFormatter.getNewLine() + "%s");
+
     @Getter
     @Expose
     @SerializedName("(Discord) Player killed a boss monster")
-    private String playerBossKilledFormat = "+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!";
+    private Message playerBossKilled = new Message("+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!");
+
     @Getter
     @Expose
     @SerializedName("(Discord) Chat from Minecraft")
-    private String minecraftChatFormat = "`<%s>` %s";
+    private Message minecraftChat = new Message("`<%s>` %s");
+
     @Getter
     @Expose
     @SerializedName("(Minecraft) Chat from Discord")
-    private String discordChatFormat = "\u00A77DC \u00BB\u00A7r <\u00A73%s\u00A7r> %s";
+    private Message discordChat = new Message("\u00A77DC \u00BB\u00A7r <\u00A73%s\u00A7r> %s");
 
     private static Messages loadConfigFile()
     {
@@ -71,7 +99,7 @@ public class Messages
             }
 
             // Save the config back to file
-            FileUtils.writeStringToFile(messagesFile, Config.getGson().toJson(messages));
+            FileUtils.writeStringToFile(messagesFile, Config.getGson().toJson(messages, Messages.class));
         }
         catch (Exception e)
         {
