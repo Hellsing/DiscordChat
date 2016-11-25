@@ -10,14 +10,15 @@ import net.minecraft.server.MinecraftServer;
 public class Online implements ICommand
 {
     private static final String onlineFormat = "--- Currently Online: %1$d ---";
-    private static final String newLine = System.getProperty("line.separator");
 
     @Getter
-    private ChannelType channelType = ChannelType.BOTH;
+    private final ChannelType channelType = ChannelType.BOTH;
     @Getter
-    private PermissionType permissionType = PermissionType.EVERYONE;
+    private final PermissionType permissionType = PermissionType.EVERYONE;
     @Getter
-    private String[] commandAliases = new String[] { "online", "on" };
+    private final String[] commandAliases = new String[] { "online", "on" };
+    @Getter
+    private final String description = "Displays all current players on the server";
 
     @Override
     public boolean execute(User sender, MessageChannel channel, String[] args)
@@ -31,7 +32,7 @@ public class Online implements ICommand
         if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
         {
             // Add a new line followed by all user names separated by comma
-            sb.append(newLine);
+            sb.append(MessageFormatter.getNewLine());
             sb.append("+ ");
             sb.append(MinecraftServer.getServer().getConfigurationManager().func_152609_b(false));
         }

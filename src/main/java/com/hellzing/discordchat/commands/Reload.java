@@ -1,5 +1,6 @@
 package com.hellzing.discordchat.commands;
 
+import com.hellzing.discordchat.DiscordChat;
 import lombok.Getter;
 import net.dv8tion.jda.entities.MessageChannel;
 import net.dv8tion.jda.entities.User;
@@ -7,11 +8,13 @@ import net.dv8tion.jda.entities.User;
 public class Reload implements ICommand
 {
     @Getter
-    private ICommand.ChannelType channelType = ChannelType.PRIVATE;
+    private final ICommand.ChannelType channelType = ChannelType.PRIVATE;
     @Getter
-    private ICommand.PermissionType permissionType = PermissionType.OWNER;
+    private final ICommand.PermissionType permissionType = PermissionType.OWNER;
     @Getter
-    private String[] commandAliases = new String[] { "reload", "rl" };
+    private final String[] commandAliases = new String[] { "reload", "rl" };
+    @Getter
+    private final String description = "Reloads the complete " + DiscordChat.modId + "mod";
 
     @Override
     public boolean execute(User sender, MessageChannel channel, String[] args)
