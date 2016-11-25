@@ -30,6 +30,11 @@ public class MessageFormatter
         return getDiscordCodeBlock(defaultSyntax, String.format(Messages.getInstance().getPlayerDeathFormat(), deathMessage));
     }
 
+    public static String getPlayerBossKilledMessage(String dimensionName, String playerName, String bossName)
+    {
+        return getDiscordCodeBlock(defaultSyntax, String.format(Messages.getInstance().getPlayerBossKilledFormat(), dimensionName, playerName, bossName));
+    }
+
     public static String getMinecraftToDiscordMessage(String username, String message)
     {
         return String.format(Messages.getInstance().getMinecraftChatFormat(), username, message);

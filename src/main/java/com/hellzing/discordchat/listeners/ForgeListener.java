@@ -7,10 +7,10 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import lombok.val;
+import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.IChatComponent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AchievementEvent;
@@ -52,11 +52,28 @@ public class ForgeListener
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event)
     {
+        // Player death
         if (event.entityLiving instanceof EntityPlayer)
         {
             // Send the death message to the Discord server
             DiscordWrapper.getInstance()
-                    .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
+                          .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
+        }
+
+        // Boss killed
+        if (event.entityLiving instanceof IBossDisplayData && event.source.getEntity() instanceof EntityPlayer)
+        {
+            // Get the dimension name
+            val dimensionName = event.entity.worldObj.provider.getDimensionName();
+
+            // Get the killing player name
+            val playerName = Utility.getPlayerName((EntityPlayer) event.source.getEntity());
+
+            // Get boss name
+            val bossName = event.entityLiving.func_145748_c_().getUnformattedText();
+
+            // Send the boss killed message to the Discord server
+            DiscordWrapper.getInstance().sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerBossKilledMessage(dimensionName, playerName, bossName)));
         }
     }
 
@@ -73,7 +90,7 @@ public class ForgeListener
             }
 
             // Get achievement text
-            IChatComponent achievementText = event.achievement.func_150951_e();
+            val achievementText = event.achievement.func_150951_e();
 
             // Send the achievement message to the Discord server
             DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));

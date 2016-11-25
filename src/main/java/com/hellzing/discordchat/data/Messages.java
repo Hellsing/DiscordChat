@@ -36,6 +36,10 @@ public class Messages
     private String playerDeathFormat = "- DEATH -" + MessageFormatter.getNewLine() + "%s";
     @Getter
     @Expose
+    @SerializedName("(Discord) Player killed a boss monster")
+    private String playerBossKilledFormat = "+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!";
+    @Getter
+    @Expose
     @SerializedName("(Discord) Chat from Minecraft")
     private String minecraftChatFormat = "`<%s>` %s";
     @Getter
