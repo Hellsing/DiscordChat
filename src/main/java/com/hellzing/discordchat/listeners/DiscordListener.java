@@ -82,6 +82,11 @@ public class DiscordListener extends ListenerAdapter
                         }
                     }
                 }
+                else if (event.isPrivate())
+                {
+                    // Respond to unknown commands in private chats
+                    event.getChannel().sendMessage("I do not recognize this command, sorry!");
+                }
             }
 
             // Handle public messages
@@ -93,7 +98,6 @@ public class DiscordListener extends ListenerAdapter
                     // Send the message to the Minecraft server (without color codes)
                     Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(),
                                                                                             Utility.stripMinecraftColors(event.getMessage().getContent())));
-
                 }
             }
         }
