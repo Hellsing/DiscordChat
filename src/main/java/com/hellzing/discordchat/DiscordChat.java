@@ -17,6 +17,8 @@ import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+
 @Mod(modid = DiscordChat.modId, name = DiscordChat.modId, version = DiscordChat.version, acceptableRemoteVersions = "*")
 public class DiscordChat
 {
@@ -40,9 +42,8 @@ public class DiscordChat
     {
         try
         {
-            // Create data holding classes instances
-            Config.getInstance();
-            Messages.getInstance();
+            // Load data related files
+            reloadConfigs();
 
             // Check if mod is enabled
             if (Config.getInstance().isEnabled())
@@ -72,5 +73,14 @@ public class DiscordChat
     {
         // Shutdown DiscordWrapper wrapper
         DiscordWrapper.getInstance().getJda().shutdown();
+    }
+
+    /**
+     * Reloads all data related files, such as the main configuration file
+     */
+    public static void reloadConfigs() throws IOException
+    {
+        Config.reloadConfig();
+        Messages.reloadConfig();
     }
 }

@@ -10,6 +10,7 @@ import lombok.val;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Config
 {
@@ -22,8 +23,8 @@ public class Config
     @Getter
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    @Getter(lazy = true)
-    private static final Config instance = loadConfigFile();
+    @Getter
+    private static Config instance;
 
     @Getter
     @Expose
@@ -42,45 +43,44 @@ public class Config
     @SerializedName("Monitored Channels")
     private String[] monitoredChannels = new String[] { "minecraft", "feed-the-beast", "technic-pack", "forge-server" };
 
-    private static Config loadConfigFile()
+    private static Config loadConfigFile() throws IOException
     {
         // Create config file instance
         Config config = new Config();
 
-        try
+        // Check if a config file exists
+        if (!configFile.exists())
         {
-            // Check if a config file exists
-            if (!configFile.exists())
+            if (!configFolder.exists())
             {
-                if (!configFolder.exists())
-                {
-                    // Create directory structure
-                    configFolder.mkdirs();
-                }
-
-                // Create file within directory
-                configFile.createNewFile();
+                // Create directory structure
+                configFolder.mkdirs();
             }
 
-            // Parse the config
-            val configJson = FileUtils.readFileToString(configFile, "utf-8");
-            val parsedConfig = gson.fromJson(configJson, Config.class);
-            if (parsedConfig != null)
-            {
-                // Apply parsed config object
-                config = parsedConfig;
-            }
+            // Create file within directory
+            configFile.createNewFile();
+        }
 
-            // Save the config back to file
-            FileUtils.writeStringToFile(configFile, gson.toJson(config));
-        }
-        catch (Exception e)
+        // Parse the config
+        val configJson = FileUtils.readFileToString(configFile, "utf-8");
+        val parsedConfig = gson.fromJson(configJson, Config.class);
+        if (parsedConfig != null)
         {
-            DiscordChat.getLogger().error("Failed to parse config from file", e);
+            // Apply parsed config object
+            config = parsedConfig;
         }
+
+        // Save the config back to file
+        FileUtils.writeStringToFile(configFile, gson.toJson(config));
 
         // Apply instance
         return config;
+    }
+
+    public static void reloadConfig() throws IOException
+    {
+        // Load the config file
+        instance = loadConfigFile();
     }
 
     // Make constructor private to prevent multiple instantiations

@@ -2,7 +2,6 @@ package com.hellzing.discordchat.data;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,14 +10,15 @@ import lombok.val;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class Messages
 {
     @Getter
     private static final File messagesFile = new File(Config.getConfigFolder().getAbsolutePath() + File.separatorChar + "Messages.json");
 
-    @Getter(lazy = true)
-    private static final Messages instance = loadConfigFile();
+    @Getter
+    private static Messages instance;
 
     @NoArgsConstructor
     @AllArgsConstructor
@@ -75,38 +75,37 @@ public class Messages
     @SerializedName("(Minecraft) Chat from Discord")
     private Message discordChat = new Message("\u00A77DC \u00BB\u00A7r <\u00A73%s\u00A7r> %s");
 
-    private static Messages loadConfigFile()
+    private static Messages loadConfigFile() throws IOException
     {
         // Create messages instance
         Messages messages = new Messages();
 
-        try
+        // Check if a config file exists
+        if (!messagesFile.exists())
         {
-            // Check if a config file exists
-            if (!messagesFile.exists())
-            {
-                // Create file within directory
-                messagesFile.createNewFile();
-            }
-
-            // Parse the config
-            val configJson = FileUtils.readFileToString(messagesFile, "utf-8");
-            val parsedConfig = Config.getGson().fromJson(configJson, Messages.class);
-            if (parsedConfig != null)
-            {
-                // Apply parsed config object
-                messages = parsedConfig;
-            }
-
-            // Save the config back to file
-            FileUtils.writeStringToFile(messagesFile, Config.getGson().toJson(messages, Messages.class));
+            // Create file within directory
+            messagesFile.createNewFile();
         }
-        catch (Exception e)
+
+        // Parse the config
+        val configJson = FileUtils.readFileToString(messagesFile, "utf-8");
+        val parsedConfig = Config.getGson().fromJson(configJson, Messages.class);
+        if (parsedConfig != null)
         {
-            DiscordChat.getLogger().error("Failed to parse messages from file", e);
+            // Apply parsed config object
+            messages = parsedConfig;
         }
+
+        // Save the config back to file
+        FileUtils.writeStringToFile(messagesFile, Config.getGson().toJson(messages, Messages.class));
 
         // Apply instance
         return messages;
+    }
+
+    public static void reloadConfig() throws IOException
+    {
+        // Load the config file
+        instance = loadConfigFile();
     }
 }
