@@ -20,19 +20,19 @@ public class Messages
 
     @Getter
     @Expose
-    @SerializedName("(Discord) Player join message")
+    @SerializedName("(Discord) Player joins Minecraft server")
     private String playerJoinFormat = "+ %s joined the Minecraft server.";
     @Getter
     @Expose
-    @SerializedName("(Discord) Player leave message")
+    @SerializedName("(Discord) Player leaves Minecraft server")
     private String playerLeaveFormat = "- %s left the Minecraft server.";
     @Getter
     @Expose
-    @SerializedName("(Discord) Player achievement message")
+    @SerializedName("(Discord) Player got achievement")
     private String playerAchievementFormat = "%s has just earned the achievement [%s]";
     @Getter
     @Expose
-    @SerializedName("(Discord) Player death message")
+    @SerializedName("(Discord) Player death")
     private String playerDeathFormat = "- DEATH -" + MessageFormatter.getNewLine() + "%s";
     @Getter
     @Expose
