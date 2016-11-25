@@ -16,7 +16,7 @@ public class Online implements ICommand
     @Getter
     private final PermissionType permissionType = PermissionType.EVERYONE;
     @Getter
-    private final String[] commandAliases = new String[] { "online", "on" };
+    private final String[] commandAliases = new String[] { "online", "on", "list" };
     @Getter
     private final String description = "Displays all current players on the server";
 
