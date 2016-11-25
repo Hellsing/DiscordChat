@@ -1,5 +1,6 @@
 package com.hellzing.discordchat.listeners;
 
+import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
@@ -35,17 +36,17 @@ public class ForgeListener
             }
 
             // Apply the custom game
-            DiscordWrapper.getInstance().setCurrentGame(gameName);
+            DiscordWrapper.setCurrentGame(gameName);
         }
     }
 
     @SubscribeEvent
     public void onServerChat(ServerChatEvent event)
     {
-        if (event.player != null)
+        if (event.player != null && Messages.getInstance().getMinecraftChat().isEnabled())
         {
             // Send the chat message to the Discord server
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getMinecraftToDiscordMessage(event.username, event.message));
+            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getMinecraftToDiscordMessage(event.username, event.message));
         }
     }
 
@@ -53,15 +54,15 @@ public class ForgeListener
     public void onLivingDeath(LivingDeathEvent event)
     {
         // Player death
-        if (event.entityLiving instanceof EntityPlayer)
+        if (event.entityLiving instanceof EntityPlayer && Messages.getInstance().getPlayerDeath().isEnabled())
         {
             // Send the death message to the Discord server
-            DiscordWrapper.getInstance()
+            DiscordWrapper
                           .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
         }
 
         // Boss killed
-        if (event.entityLiving instanceof IBossDisplayData && event.source.getEntity() instanceof EntityPlayer)
+        if (event.entityLiving instanceof IBossDisplayData && event.source.getEntity() instanceof EntityPlayer && Messages.getInstance().getPlayerBossKilled().isEnabled())
         {
             // Get the dimension name
             val dimensionName = event.entity.worldObj.provider.getDimensionName();
@@ -73,14 +74,14 @@ public class ForgeListener
             val bossName = event.entityLiving.func_145748_c_().getUnformattedText();
 
             // Send the boss killed message to the Discord server
-            DiscordWrapper.getInstance().sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerBossKilledMessage(dimensionName, playerName, bossName)));
+            DiscordWrapper.sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerBossKilledMessage(dimensionName, playerName, bossName)));
         }
     }
 
     @SubscribeEvent
     public void onAchievement(AchievementEvent event)
     {
-        if (event.entityPlayer instanceof EntityPlayerMP)
+        if (event.entityPlayer instanceof EntityPlayerMP && Messages.getInstance().getPlayerAchievement().isEnabled())
         {
             // Check if player has the achievement already or can't get it
             val stats = ((EntityPlayerMP) event.entityPlayer).func_147099_x();
@@ -93,21 +94,27 @@ public class ForgeListener
             val achievementText = event.achievement.func_150951_e();
 
             // Send the achievement message to the Discord server
-            DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));
+            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));
         }
     }
 
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        // Send the join message to the Discord server
-        DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerJoinMessage(Utility.getPlayerName(event.player)));
+        if (Messages.getInstance().getPlayerJoin().isEnabled())
+        {
+            // Send the join message to the Discord server
+            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerJoinMessage(Utility.getPlayerName(event.player)));
+        }
     }
 
     @SubscribeEvent
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        // Send the leave message to the Discord server
-        DiscordWrapper.getInstance().sendMessageToAllChannels(MessageFormatter.getPlayerLeaveMessage(Utility.getPlayerName(event.player)));
+        if (Messages.getInstance().getPlayerLeave().isEnabled())
+        {
+            // Send the leave message to the Discord server
+            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerLeaveMessage(Utility.getPlayerName(event.player)));
+        }
     }
 }

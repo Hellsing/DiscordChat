@@ -55,8 +55,8 @@ public class DiscordListener extends ListenerAdapter
                     {
                         if (command.getPermissionType() == ICommand.PermissionType.EVERYONE
                                 || (command.getPermissionType() == ICommand.PermissionType.OWNER
-                                || command.getPermissionType() == ICommand.PermissionType.ADMIN) && event.getAuthor().equals(DiscordWrapper.getInstance().getServerOwner())
-                                || command.getPermissionType() == ICommand.PermissionType.ADMIN && DiscordWrapper.getInstance().getServerAdmins().contains(event.getAuthor()))
+                                || command.getPermissionType() == ICommand.PermissionType.ADMIN) && event.getAuthor().equals(DiscordWrapper.getServerOwner())
+                                || command.getPermissionType() == ICommand.PermissionType.ADMIN && DiscordWrapper.getServerAdmins().contains(event.getAuthor()))
                         {
                             // Execute command
                             val result = command.execute(event.getAuthor(), event.getChannel(), args);

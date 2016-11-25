@@ -86,7 +86,7 @@ public class DiscordWrapper implements Runnable
         }
     }
 
-    public void sendMessageToAllChannels(String message)
+    public static void sendMessageToAllChannels(String message)
     {
         for (val channelName : Config.getInstance().getMonitoredChannels())
         {
@@ -94,11 +94,11 @@ public class DiscordWrapper implements Runnable
         }
     }
 
-    public void sendMessageToChannel(String channelName, String message)
+    public static void sendMessageToChannel(String channelName, String message)
     {
         try
         {
-            val channel = getChannel(channelName);
+            val channel = instance.getChannel(channelName);
             if (channel.isPresent())
             {
                 channel.get().sendMessage(message);
@@ -118,15 +118,15 @@ public class DiscordWrapper implements Runnable
      * Applies a custom name as currently playing game.
      * @param gameName The desired game name.
      */
-    public void setCurrentGame(String gameName)
+    public static void setCurrentGame(String gameName)
     {
-        if (currentGame == null || !currentGame.equals(gameName))
+        if (instance.currentGame == null || !instance.currentGame.equals(gameName))
         {
             try
             {
                 // Apply game
-                currentGame = gameName;
-                jda.getAccountManager().setGame(gameName);
+                instance.currentGame = gameName;
+                instance.jda.getAccountManager().setGame(gameName);
             }
             catch (Exception e)
             {
@@ -140,20 +140,20 @@ public class DiscordWrapper implements Runnable
         return jda.getGuildById(Config.getInstance().getServerId()).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
     }
 
-    public User getServerOwner()
+    public static User getServerOwner()
     {
-        return jda.getGuildById(Config.getInstance().getServerId()).getOwner();
+        return instance.jda.getGuildById(Config.getInstance().getServerId()).getOwner();
     }
 
-    public List<User> getServerAdmins()
+    public static List<User> getServerAdmins()
     {
         val admins = new HashSet<User>();
 
-        for (val role : jda.getGuildById(Config.getInstance().getServerId()).getRoles())
+        for (val role : instance.jda.getGuildById(Config.getInstance().getServerId()).getRoles())
         {
             if (role.getPermissions().stream().anyMatch(perm -> perm.name().toLowerCase().contains("admin")))
             {
-                for (val user : jda.getGuildById(Config.getInstance().getServerId()).getUsersWithRole(role))
+                for (val user : instance.jda.getGuildById(Config.getInstance().getServerId()).getUsersWithRole(role))
                 {
                     admins.add(user);
                 }
