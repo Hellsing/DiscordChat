@@ -6,6 +6,7 @@ import com.hellzing.discordchat.commands.ICommand;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
+import emoji4j.EmojiUtils;
 import lombok.val;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
@@ -97,7 +98,7 @@ public class DiscordListener extends ListenerAdapter
                 {
                     // Send the message to the Minecraft server (without color codes)
                     Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(),
-                                                                                            Utility.stripMinecraftColors(event.getMessage().getContent())));
+                                                                                            EmojiUtils.shortCodify(Utility.stripMinecraftColors(event.getMessage().getContent()))));
                 }
             }
         }
