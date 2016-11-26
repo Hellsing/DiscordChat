@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 
 public class Online implements ICommand
 {
+    private static final String defaultMessage = "`Server is empty` :dizzy_face:";
     private static final String onlineFormat = "--- Currently Online: %1$d ---";
 
     @Getter
@@ -23,22 +24,30 @@ public class Online implements ICommand
     @Override
     public boolean execute(User sender, MessageChannel channel, String[] args)
     {
-        val sb = new StringBuilder();
-
-        // Apply current player count
-        sb.append(String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount()));
-
-        // Check if any player is playing
-        if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
+        if (MinecraftServer.getServer().getCurrentPlayerCount() == 0)
         {
-            // Add a new line followed by all user names separated by comma
-            sb.append(MessageFormatter.getNewLine());
-            sb.append("+ ");
-            sb.append(MinecraftServer.getServer().getConfigurationManager().func_152609_b(false));
+            // Send default message
+            channel.sendMessage(defaultMessage);
         }
+        else
+        {
+            val sb = new StringBuilder();
 
-        // Send message to discord channel
-        channel.sendMessage(MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
+            // Apply current player count
+            sb.append(String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount()));
+
+            // Check if any player is playing
+            if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
+            {
+                // Add a new line followed by all user names separated by comma
+                sb.append(MessageFormatter.getNewLine());
+                sb.append("+ ");
+                sb.append(MinecraftServer.getServer().getConfigurationManager().func_152609_b(false));
+            }
+
+            // Send message to discord channel
+            channel.sendMessage(MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
+        }
 
         return true;
     }
