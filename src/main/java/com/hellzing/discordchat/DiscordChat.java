@@ -28,7 +28,7 @@ public class DiscordChat
     @Getter
     private static java.io.File modConfigDirectory;
 
-    private static boolean initialized = true;
+    private static boolean initialized;
 
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event)
@@ -51,6 +51,9 @@ public class DiscordChat
 
                     // Set Discord status
                     DiscordWrapper.setCurrentGame("PreInit (1/4)");
+
+                    // Mark as initialized
+                    initialized = true;
                 }
             }
             catch (Exception e)
@@ -61,9 +64,6 @@ public class DiscordChat
         catch (IOException e)
         {
             logger.error("An exception occurred while loading the config files", e);
-
-            // Mark as failed to initialize
-            initialized = false;
         }
     }
 
