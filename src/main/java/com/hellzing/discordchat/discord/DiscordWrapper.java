@@ -27,6 +27,8 @@ public class DiscordWrapper implements Runnable
     @Getter
     private JDA jda;
     @Getter
+    private boolean ready;
+    @Getter
     private String currentGame;
 
     public static void initialize() throws Exception
@@ -68,8 +70,11 @@ public class DiscordWrapper implements Runnable
             }
             else
             {
-                // Successfully setup, setting temporary game
-                jda.getAccountManager().setGame("initializing...");
+                // Mark as ready
+                ready = true;
+
+                // Successfully setup, setting game
+                jda.getAccountManager().setGame(currentGame);
             }
         }
         catch (LoginException | IllegalArgumentException e)
@@ -120,13 +125,17 @@ public class DiscordWrapper implements Runnable
      */
     public static void setCurrentGame(String gameName)
     {
-        if (instance.currentGame == null || !instance.currentGame.equals(gameName))
+        instance.jda.getAccountManager().update();
+        if (instance.currentGame == null || !instance.jda.getSelfInfo().getCurrentGame().getName().equals(gameName))
         {
             try
             {
                 // Apply game
                 instance.currentGame = gameName;
-                instance.jda.getAccountManager().setGame(gameName);
+                if (instance.ready)
+                {
+                    instance.jda.getAccountManager().setGame(gameName);
+                }
             }
             catch (Exception e)
             {
