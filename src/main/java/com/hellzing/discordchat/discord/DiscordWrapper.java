@@ -149,7 +149,15 @@ public class DiscordWrapper implements Runnable
 
     private Optional<TextChannel> getChannel(String channelName)
     {
-        return getServer().getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
+        val channels = getServer().getTextChannelsByName(channelName, true);
+        if (channels != null && channels.size() > 0)
+        {
+            // Return first channel found with that name
+            return Optional.of(channels.get(0));
+        }
+
+        // No channel found
+        return Optional.empty();
     }
 
     public static Member getServerOwner()
