@@ -5,9 +5,11 @@ import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import lombok.Getter;
 import lombok.val;
+import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class MessageFormatter
@@ -57,24 +59,33 @@ public class MessageFormatter
             val matcher = tagPattern.matcher(toSend);
             while (matcher.find())
             {
-                val foundUser = DiscordWrapper.getServer()
+                // Get the complete matching user
+                Optional<User> foundUser = DiscordWrapper.getServer().getUsers().stream().filter(user -> user.getUsername().equalsIgnoreCase(matcher.group(1))).findFirst();
+
+                // Search further if user was not found
+                if (!foundUser.isPresent())
+                {
+                    foundUser = DiscordWrapper.getServer()
                                               .getUsers()
                                               .stream()
-                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUsername(), matcher.group(1)))
-                                              .findFirst();
+                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUsername(), matcher.group(1))).findFirst();
+                }
+
                 if (foundUser.isPresent())
                 {
+                    // Replace found occurrence with Discord mention
                     matcher.appendReplacement(buffer, foundUser.get().getAsMention());
                 }
                 else
                 {
+                    // No error, but list the possible mentionable users as debug message in the logs
                     DiscordChat.getLogger().debug("Possible tagged user not found: " + matcher.group(1));
                     DiscordChat.getLogger().debug("Users: " + Arrays.toString(DiscordWrapper.getServer().getUsers().stream().map(user -> user.getUsername().toLowerCase()).toArray()));
                     matcher.appendReplacement(buffer, "@" + matcher.group(1));
                 }
             }
 
-            // Add tail
+            // Add the remaining message
             matcher.appendTail(buffer);
 
             // Return result
