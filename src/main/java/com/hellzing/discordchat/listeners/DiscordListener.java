@@ -7,9 +7,8 @@ import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
 import lombok.val;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.hooks.ListenerAdapter;
 import net.minecraft.server.MinecraftServer;
 
 public class DiscordListener extends ListenerAdapter
@@ -29,7 +28,7 @@ public class DiscordListener extends ListenerAdapter
             }
 
             // Ignore non-monitored channels
-            if (!event.isFromType(ChannelType.PRIVATE) && !Utility.isChannelMonitored(event.getTextChannel()))
+            if (!event.isPrivate() && !Utility.isChannelMonitored(event.getTextChannel()))
             {
                 return;
             }
@@ -51,8 +50,8 @@ public class DiscordListener extends ListenerAdapter
                 {
                     // Check command type
                     if (command.getChannelType() == ICommand.ChannelType.BOTH
-                            || command.getChannelType() == ICommand.ChannelType.PRIVATE && event.isFromType(ChannelType.PRIVATE)
-                            || command.getChannelType() == ICommand.ChannelType.GUILD && !event.isFromType(ChannelType.PRIVATE))
+                            || command.getChannelType() == ICommand.ChannelType.PRIVATE && event.isPrivate()
+                            || command.getChannelType() == ICommand.ChannelType.GUILD && !event.isPrivate())
                     {
                         if (command.getPermissionType() == ICommand.PermissionType.EVERYONE
                                 || (command.getPermissionType() == ICommand.PermissionType.OWNER
@@ -76,14 +75,14 @@ public class DiscordListener extends ListenerAdapter
                     }
                     else
                     {
-                        if (event.isFromType(ChannelType.PRIVATE))
+                        if (event.isPrivate())
                         {
                             // Notify our private chat friend
                             event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: This command does not work in this channel!"));
                         }
                     }
                 }
-                else if (event.isFromType(ChannelType.PRIVATE))
+                else if (event.isPrivate())
                 {
                     // Respond to unknown commands in private chats
                     event.getChannel().sendMessage("I do not recognize this command, sorry!");
@@ -91,13 +90,13 @@ public class DiscordListener extends ListenerAdapter
             }
 
             // Handle public messages
-            if (!event.isFromType(ChannelType.PRIVATE))
+            if (!event.isPrivate())
             {
                 // Check if there are players online
                 if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
                 {
                     // Send the message to the Minecraft server (without color codes)
-                    Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getName(),
+                    Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getUsername(),
                                                                                             Utility.Emoji.replaceEmojiWithName(Utility.stripMinecraftColors(event.getMessage().getContent()))));
                 }
             }

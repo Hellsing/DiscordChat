@@ -5,7 +5,7 @@ import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import lombok.Getter;
 import lombok.val;
-import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -60,23 +60,28 @@ public class MessageFormatter
             while (matcher.find())
             {
                 // Get the complete matching user
-                Optional<Member> foundUser = DiscordWrapper.getServer().getMembers().stream().filter(user -> user.getEffectiveName().equalsIgnoreCase(matcher.group(1))).findFirst();
+                Optional<User> foundUser = DiscordWrapper.getServer().getUsers().stream().filter(user -> user.getUsername().equalsIgnoreCase(matcher.group(1))).findFirst();
 
                 // Search further if user was not found
                 if (!foundUser.isPresent())
                 {
                     foundUser = DiscordWrapper.getServer()
-                                              .getMembers()
+                                              .getUsers()
                                               .stream()
-                                              .filter(user -> StringUtils.containsIgnoreCase(user.getEffectiveName(), matcher.group(1))).findFirst();
+                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUsername(), matcher.group(1))).findFirst();
 
                     // And even further by searching for the nickname
                     if (!foundUser.isPresent())
                     {
-                        foundUser = DiscordWrapper.getServer()
-                                                  .getMembers()
-                                                  .stream()
-                                                  .filter(user -> StringUtils.containsIgnoreCase(user.getNickname(), matcher.group(1))).findFirst();
+                        for (val user : DiscordWrapper.getServer().getUsers())
+                        {
+                            if (StringUtils.containsIgnoreCase(DiscordWrapper.getServer().getNicknameForUser(user), matcher.group(1)))
+                            {
+                                // Apply found user
+                                foundUser = Optional.of(user);
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -89,7 +94,7 @@ public class MessageFormatter
                 {
                     // No error, but list the possible mentionable users as debug message in the logs
                     DiscordChat.getLogger().debug("Possible tagged user not found: " + matcher.group(1));
-                    DiscordChat.getLogger().debug("Users: " + Arrays.toString(DiscordWrapper.getServer().getMembers().stream().map(user -> user.getEffectiveName().toLowerCase()).toArray()));
+                    DiscordChat.getLogger().debug("Users: " + Arrays.toString(DiscordWrapper.getServer().getUsers().stream().map(user -> user.getUsername().toLowerCase()).toArray()));
                     matcher.appendReplacement(buffer, "@" + matcher.group(1));
                 }
             }

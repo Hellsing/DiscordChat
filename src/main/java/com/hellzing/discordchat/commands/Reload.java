@@ -3,8 +3,8 @@ package com.hellzing.discordchat.commands;
 import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import lombok.Getter;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.User;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class Reload implements ICommand
