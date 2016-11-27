@@ -22,33 +22,33 @@ public class MessageFormatter
 
     public static String getPlayerJoinMessage(String username)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerJoin().format(username));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerJoin().format(username));
     }
 
     public static String getPlayerLeaveMessage(String username)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerLeave().format(username));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerLeave().format(username));
     }
 
     public static String getPlayerAchievementMessage(String username, String achievementName)
     {
-        return getDiscordCodeBlock("", Messages.getInstance().getPlayerAchievement().format(username, achievementName));
+        return getDiscordCodeBlock("", Messages.getInstance().getDiscord().getPlayerAchievement().format(username, achievementName));
     }
 
     public static String getPlayerDeathMessage(String deathMessage)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerDeath().format(deathMessage));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerDeath().format(deathMessage));
     }
 
     public static String getPlayerBossKilledMessage(String dimensionName, String playerName, String bossName)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getPlayerBossKilled().format(dimensionName, playerName, bossName));
+        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerBossKilled().format(dimensionName, playerName, bossName));
     }
 
     public static String getMinecraftToDiscordMessage(String username, String message)
     {
         // Get the correctly formatted message
-        String toSend = Messages.getInstance().getMinecraftChat().format(username, message);
+        String toSend = Messages.getInstance().getDiscord().getMinecraftChat().format(username, message);
 
         try
         {
@@ -110,7 +110,7 @@ public class MessageFormatter
 
     public static String getDiscordToMinecraftMessage(String username, String message)
     {
-        return Messages.getInstance().getDiscordChat().format(username, message);
+        return Messages.getInstance().getMinecraft().getDiscordChat().format(username, message);
     }
 
     public static String getDiscordCodeBlock(String syntax, String text)

@@ -145,15 +145,21 @@ public class DiscordChat
             return;
         }
 
-        // Send message
-        DiscordWrapper.sendMessageToAllChannels("`Server has successfully started and you are able to join!` :ok_hand:");
+        if (Messages.getInstance().getDiscord().getServerStarted().isEnabled())
+        {
+            // Send message
+            DiscordWrapper.sendMessageToAllChannels(Messages.getInstance().getDiscord().getServerStarted().getMessageFormat());
+        }
     }
 
     @Mod.EventHandler
     public void onFMLServerStopping(FMLServerStoppingEvent event)
     {
-        // Notify channels
-        DiscordWrapper.sendMessageToAllChannels("`Server is shutting down!` :sleeping:");
+        if (Messages.getInstance().getDiscord().getServerStopping().isEnabled())
+        {
+            // Notify channels
+            DiscordWrapper.sendMessageToAllChannels(Messages.getInstance().getDiscord().getServerStopping().getMessageFormat());
+        }
 
         // Shutdown DiscordWrapper wrapper
         DiscordWrapper.getInstance().getJda().shutdown();

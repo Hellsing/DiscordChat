@@ -40,40 +40,70 @@ public class Messages
         }
     }
 
-    @Getter
-    @Expose
-    @SerializedName("(Discord) Player joins Minecraft server")
-    private Message playerJoin = new Message("+ %s joined the Minecraft server.");
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Discord
+    {
+        @Getter
+        @Expose
+        @SerializedName("Chat from Minecraft")
+        private Message minecraftChat = new Message("`<%s>` %s");
+
+        @Getter
+        @Expose
+        @SerializedName("Server has started")
+        private Message serverStarted = new Message("`Server has successfully started and you are able to join!` :ok_hand:");
+
+        @Getter
+        @Expose
+        @SerializedName("Server is stopping")
+        private Message serverStopping = new Message("`Server is shutting down!` :sleeping:");
+
+        @Getter
+        @Expose
+        @SerializedName("Player joins Minecraft server")
+        private Message playerJoin = new Message("+ %s joined the Minecraft server.");
+
+        @Getter
+        @Expose
+        @SerializedName("Player leaves Minecraft server")
+        private Message playerLeave = new Message("- %s left the Minecraft server.");
+
+        @Getter
+        @Expose
+        @SerializedName("Player got achievement")
+        private Message playerAchievement = new Message("%s has just earned the achievement [%s]");
+
+        @Getter
+        @Expose
+        @SerializedName("Player death")
+        private Message playerDeath = new Message("- DEATH -" + MessageFormatter.getNewLine() + "%s");
+
+        @Getter
+        @Expose
+        @SerializedName("Player killed a boss monster")
+        private Message playerBossKilled = new Message("+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!");
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Minecraft
+    {
+        @Getter
+        @Expose
+        @SerializedName("Chat from Discord")
+        private Message discordChat = new Message("\u00A77DC \u00BB\u00A7r <\u00A73%s\u00A7r> %s");
+    }
 
     @Getter
     @Expose
-    @SerializedName("(Discord) Player leaves Minecraft server")
-    private Message playerLeave = new Message("- %s left the Minecraft server.");
+    @SerializedName("Discord")
+    private Discord discord = new Discord();
 
     @Getter
     @Expose
-    @SerializedName("(Discord) Player got achievement")
-    private Message playerAchievement = new Message("%s has just earned the achievement [%s]");
-
-    @Getter
-    @Expose
-    @SerializedName("(Discord) Player death")
-    private Message playerDeath = new Message("- DEATH -" + MessageFormatter.getNewLine() + "%s");
-
-    @Getter
-    @Expose
-    @SerializedName("(Discord) Player killed a boss monster")
-    private Message playerBossKilled = new Message("+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!");
-
-    @Getter
-    @Expose
-    @SerializedName("(Discord) Chat from Minecraft")
-    private Message minecraftChat = new Message("`<%s>` %s");
-
-    @Getter
-    @Expose
-    @SerializedName("(Minecraft) Chat from Discord")
-    private Message discordChat = new Message("\u00A77DC \u00BB\u00A7r <\u00A73%s\u00A7r> %s");
+    @SerializedName("Minecraft")
+    private Minecraft minecraft = new Minecraft();
 
     private static Messages loadConfigFile() throws IOException
     {

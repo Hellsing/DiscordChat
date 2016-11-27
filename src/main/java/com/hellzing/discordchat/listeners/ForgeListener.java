@@ -43,7 +43,7 @@ public class ForgeListener
     @SubscribeEvent
     public void onServerChat(ServerChatEvent event)
     {
-        if (event.player != null && Messages.getInstance().getMinecraftChat().isEnabled())
+        if (event.player != null && Messages.getInstance().getDiscord().getMinecraftChat().isEnabled())
         {
             // Send the chat message to the Discord server
             DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getMinecraftToDiscordMessage(event.username, event.message));
@@ -54,15 +54,15 @@ public class ForgeListener
     public void onLivingDeath(LivingDeathEvent event)
     {
         // Player death
-        if (event.entityLiving instanceof EntityPlayer && Messages.getInstance().getPlayerDeath().isEnabled())
+        if (event.entityLiving instanceof EntityPlayer && Messages.getInstance().getDiscord().getPlayerDeath().isEnabled())
         {
             // Send the death message to the Discord server
             DiscordWrapper
-                          .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
+                    .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
         }
 
         // Boss killed
-        if (event.entityLiving instanceof IBossDisplayData && event.source.getEntity() instanceof EntityPlayer && Messages.getInstance().getPlayerBossKilled().isEnabled())
+        if (event.entityLiving instanceof IBossDisplayData && event.source.getEntity() instanceof EntityPlayer && Messages.getInstance().getDiscord().getPlayerBossKilled().isEnabled())
         {
             // Get the dimension name
             val dimensionName = event.entity.worldObj.provider.getDimensionName();
@@ -81,7 +81,7 @@ public class ForgeListener
     @SubscribeEvent
     public void onAchievement(AchievementEvent event)
     {
-        if (event.entityPlayer instanceof EntityPlayerMP && Messages.getInstance().getPlayerAchievement().isEnabled())
+        if (event.entityPlayer instanceof EntityPlayerMP && Messages.getInstance().getDiscord().getPlayerAchievement().isEnabled())
         {
             // Check if player has the achievement already or can't get it
             val stats = ((EntityPlayerMP) event.entityPlayer).func_147099_x();
@@ -101,7 +101,7 @@ public class ForgeListener
     @SubscribeEvent
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event)
     {
-        if (Messages.getInstance().getPlayerJoin().isEnabled())
+        if (Messages.getInstance().getDiscord().getPlayerJoin().isEnabled())
         {
             // Send the join message to the Discord server
             DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerJoinMessage(Utility.getPlayerName(event.player)));
@@ -111,7 +111,7 @@ public class ForgeListener
     @SubscribeEvent
     public void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event)
     {
-        if (Messages.getInstance().getPlayerLeave().isEnabled())
+        if (Messages.getInstance().getDiscord().getPlayerLeave().isEnabled())
         {
             // Send the leave message to the Discord server
             DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerLeaveMessage(Utility.getPlayerName(event.player)));
