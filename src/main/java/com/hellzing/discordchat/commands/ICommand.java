@@ -1,7 +1,7 @@
 package com.hellzing.discordchat.commands;
 
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 
 public interface ICommand
 {

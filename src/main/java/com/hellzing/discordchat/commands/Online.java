@@ -3,8 +3,8 @@ package com.hellzing.discordchat.commands;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import lombok.Getter;
 import lombok.val;
-import net.dv8tion.jda.entities.MessageChannel;
-import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.User;
 import net.minecraft.server.MinecraftServer;
 
 public class Online implements ICommand
