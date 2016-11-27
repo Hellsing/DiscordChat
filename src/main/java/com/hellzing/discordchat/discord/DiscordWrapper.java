@@ -5,12 +5,13 @@ import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.listeners.DiscordListener;
 import lombok.Getter;
 import lombok.val;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class DiscordWrapper implements Runnable
         try
         {
             // Build up DiscordWrapper connection
-            jda = new JDABuilder().setBotToken(Config.getInstance().getBotToken()).addListener(new DiscordListener()).buildBlocking();
+            jda = new JDABuilder(AccountType.BOT).setToken(Config.getInstance().getBotToken()).addListener(new DiscordListener()).buildBlocking();
 
             // Get handled server
             val server = jda.getGuildById(Config.getInstance().getServerId());
@@ -75,20 +76,20 @@ public class DiscordWrapper implements Runnable
                 ready = true;
 
                 // Successfully setup, setting game
-                jda.getAccountManager().setGame(currentGame);
+                jda.getPresence().setGame(Game.of(currentGame));
             }
         }
         catch (LoginException | IllegalArgumentException e)
         {
-            DiscordChat.getLogger().error("Invalid login credentials for DiscordWrapper, disabling DiscordChat");
-            e.printStackTrace();
-            return;
+            DiscordChat.getLogger().error("An error occurred, invalid login credentials for Discord!", e);
         }
         catch (InterruptedException e)
         {
-            DiscordChat.getLogger().error("Couldn't complete login, disabling DiscordChat");
-            e.printStackTrace();
-            return;
+            DiscordChat.getLogger().error("An error occurred, could not complete login!", e);
+        }
+        catch (Exception e)
+        {
+            DiscordChat.getLogger().error("An unknown error occurred!", e);
         }
     }
 
@@ -110,10 +111,6 @@ public class DiscordWrapper implements Runnable
                 channel.get().sendMessage(message);
             }
         }
-        catch (RateLimitedException e)
-        {
-            DiscordChat.getLogger().warn("Discord chat rate limit exceeded, try again in " + e.getAvailTime() + "ms");
-        }
         catch (Exception e)
         {
             DiscordChat.getLogger().error("An error occurred while trying to send a text message to a discord channel.\r\nChannel name: " + channelName + " | Message:\r\n" + message, e);
@@ -128,14 +125,14 @@ public class DiscordWrapper implements Runnable
     {
         try
         {
-            if (instance.currentGame == null || !instance.jda.getSelfInfo().getCurrentGame().getName().equals(gameName))
+            if (instance.currentGame == null || !instance.jda.getPresence().getGame().getName().equals(gameName))
             {
 
                 // Apply game
                 instance.currentGame = gameName;
                 if (instance.ready)
                 {
-                    instance.jda.getAccountManager().setGame(gameName);
+                    instance.jda.getPresence().setGame(Game.of(gameName));
                 }
             }
         }
@@ -155,20 +152,20 @@ public class DiscordWrapper implements Runnable
         return getServer().getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
     }
 
-    public static User getServerOwner()
+    public static Member getServerOwner()
     {
         return instance.jda.getGuildById(Config.getInstance().getServerId()).getOwner();
     }
 
-    public static List<User> getServerAdmins()
+    public static List<Member> getServerAdmins()
     {
-        val admins = new HashSet<User>();
+        val admins = new HashSet<Member>();
 
         for (val role : getServer().getRoles())
         {
             if (role.getPermissions().stream().anyMatch(perm -> perm.name().toLowerCase().contains("admin")))
             {
-                for (val user : getServer().getUsersWithRole(role))
+                for (val user : getServer().getMembersWithRoles(role))
                 {
                     admins.add(user);
                 }

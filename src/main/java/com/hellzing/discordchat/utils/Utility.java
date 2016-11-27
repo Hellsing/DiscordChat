@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.server.MinecraftServer;
