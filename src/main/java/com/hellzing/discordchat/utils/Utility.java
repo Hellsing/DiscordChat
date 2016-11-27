@@ -171,9 +171,6 @@ public class Utility
          */
         public static String replaceEmojiWithName(String text)
         {
-            DiscordChat.getLogger().debug("Processing text to replace emojis: " + text);
-            DiscordChat.getLogger().debug("Pattern: " + emojiPattern.toString());
-
             // Create a buffer to store the text
             val buffer = new StringBuffer();
 
@@ -181,8 +178,6 @@ public class Utility
             val matcher = emojiPattern.matcher(text);
             while (matcher.find())
             {
-                DiscordChat.getLogger().debug("Pattern found emoji, investigating...");
-
                 // Get the emoji
                 val emoji = matcher.group(1);
 
@@ -190,13 +185,13 @@ public class Utility
                 val match = emojis.stream().filter(emojiData -> emojiData.emoji.equals(emoji)).findFirst();
                 if (match.isPresent())
                 {
-                    DiscordChat.getLogger().debug("Emoji has been identified: " + match.get().description);
-
                     // Append replacement emoji text
                     matcher.appendReplacement(buffer, ":" + match.get().aliases.get(0) + ":");
                 }
                 else
                 {
+                    DiscordChat.getLogger().debug("Found emoji which is not yet in database: " + emoji);
+
                     // Emoji not in the database or not found by the regex
                     matcher.appendReplacement(buffer, ":unkown_emoji:");
                 }
