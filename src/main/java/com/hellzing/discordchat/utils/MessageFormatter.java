@@ -69,6 +69,20 @@ public class MessageFormatter
                                               .getUsers()
                                               .stream()
                                               .filter(user -> StringUtils.containsIgnoreCase(user.getUsername(), matcher.group(1))).findFirst();
+
+                    // And even further by searching for the nickname
+                    if (!foundUser.isPresent())
+                    {
+                        for (val user : DiscordWrapper.getServer().getUsers())
+                        {
+                            if (StringUtils.containsIgnoreCase(DiscordWrapper.getServer().getNicknameForUser(user), matcher.group(1)))
+                            {
+                                // Apply found user
+                                foundUser = Optional.of(user);
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 if (foundUser.isPresent())
