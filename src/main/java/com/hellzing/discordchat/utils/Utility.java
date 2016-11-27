@@ -164,6 +164,11 @@ public class Utility
             return messages;
         }
 
+        /**
+         * Replaces all emoji chars with their corresponding name alias, like :ok_hand:.
+         * @param text The text to be parsed for emojis.
+         * @return The text with emoji chars replaced to their corresponding names.
+         */
         public static String replaceEmojiWithName(String text)
         {
             DiscordChat.getLogger().debug("Processing text to replace emojis: " + text);
