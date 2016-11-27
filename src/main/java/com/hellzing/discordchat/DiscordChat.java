@@ -6,16 +6,17 @@ import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
+import com.hellzing.discordchat.utils.Utility;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.*;
 import lombok.Getter;
 import lombok.val;
 import net.minecraftforge.common.MinecraftForge;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 @Mod(modid = DiscordChat.modId, name = DiscordChat.modId, version = DiscordChat.version, acceptableRemoteVersions = "*")
 public class DiscordChat
@@ -24,7 +25,7 @@ public class DiscordChat
     public static final String version = "2.0.0";
 
     @Getter
-    private static Logger logger = LogManager.getLogger(modId);
+    private static Logger logger;
     @Getter
     private static java.io.File modConfigDirectory;
 
@@ -33,6 +34,9 @@ public class DiscordChat
     @Mod.EventHandler
     public void onPreInitialization(FMLPreInitializationEvent event)
     {
+        // Apply logger
+        logger = event.getModLog();
+
         // Set mod config directory;
         modConfigDirectory = event.getModConfigurationDirectory();
 
@@ -40,6 +44,9 @@ public class DiscordChat
         {
             // Load data related files
             reloadConfigs();
+
+            // Load emojis
+            Utility.Emoji.getEmojis();
 
             try
             {
@@ -139,7 +146,7 @@ public class DiscordChat
         }
 
         // Send message
-        DiscordWrapper.sendMessageToAllChannels("`Server has successfully started and you are ready to join!` :ok_hand:");
+        DiscordWrapper.sendMessageToAllChannels("`Server has successfully started and you are able to join!` :ok_hand:");
     }
 
     @Mod.EventHandler
@@ -169,5 +176,15 @@ public class DiscordChat
     {
         // Check if initialization was successful and the mod is enabled
         return initialized && Config.getInstance().isEnabled();
+    }
+
+    /**
+     * Returns an input stream for reading the specified resource.
+     * @param resource The resource name.
+     * @return An input stream for reading the resource, or null if resource could not be found.
+     */
+    public static InputStream getResourceAsStream(String resource)
+    {
+        return DiscordChat.class.getClassLoader().getResourceAsStream(resource);
     }
 }

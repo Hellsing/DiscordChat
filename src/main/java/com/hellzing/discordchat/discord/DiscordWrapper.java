@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.val;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.exceptions.RateLimitedException;
@@ -144,9 +145,14 @@ public class DiscordWrapper implements Runnable
         }
     }
 
+    public static Guild getServer()
+    {
+        return instance.jda.getGuildById(Config.getInstance().getServerId());
+    }
+
     private Optional<TextChannel> getChannel(String channelName)
     {
-        return jda.getGuildById(Config.getInstance().getServerId()).getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
+        return getServer().getTextChannels().stream().filter(channel -> channel.getName().equalsIgnoreCase(channelName)).findFirst();
     }
 
     public static User getServerOwner()
@@ -158,11 +164,11 @@ public class DiscordWrapper implements Runnable
     {
         val admins = new HashSet<User>();
 
-        for (val role : instance.jda.getGuildById(Config.getInstance().getServerId()).getRoles())
+        for (val role : getServer().getRoles())
         {
             if (role.getPermissions().stream().anyMatch(perm -> perm.name().toLowerCase().contains("admin")))
             {
-                for (val user : instance.jda.getGuildById(Config.getInstance().getServerId()).getUsersWithRole(role))
+                for (val user : getServer().getUsersWithRole(role))
                 {
                     admins.add(user);
                 }
