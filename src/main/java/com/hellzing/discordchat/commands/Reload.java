@@ -21,18 +21,18 @@ public class Reload implements ICommand
     @Override
     public boolean execute(User sender, MessageChannel channel, String[] args)
     {
-        channel.sendMessage("Reloading...");
+        channel.sendMessage("Reloading...").queue();
         try
         {
             // Do the actual reloading
             DiscordChat.reloadConfigs();
 
-            channel.sendMessage("Reloading finished without errors!");
+            channel.sendMessage("Reloading finished without errors!").queue();
         }
         catch (Exception e)
         {
             // Show stacktrace to the user as he is the owner of the bot
-            channel.sendMessage("Failed to reload! Here is the exception:" + MessageFormatter.getNewLine() + ExceptionUtils.getStackTrace(e));
+            channel.sendMessage("Failed to reload! Here is the exception:" + MessageFormatter.getNewLine() + ExceptionUtils.getStackTrace(e)).queue();
         }
         return true;
     }

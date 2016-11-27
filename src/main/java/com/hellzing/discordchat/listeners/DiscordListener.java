@@ -71,7 +71,7 @@ public class DiscordListener extends ListenerAdapter
                         else
                         {
                             // Announce permission error
-                            event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: You don't have the required permission to run this command!"));
+                            event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: You don't have the required permission to run this command!")).queue();
                         }
                     }
                     else
@@ -79,14 +79,14 @@ public class DiscordListener extends ListenerAdapter
                         if (event.isFromType(ChannelType.PRIVATE))
                         {
                             // Notify our private chat friend
-                            event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: This command does not work in this channel!"));
+                            event.getChannel().sendMessage(MessageFormatter.getDiscordCodeBlock("", "Error: This command does not work in this channel!")).queue();
                         }
                     }
                 }
                 else if (event.isFromType(ChannelType.PRIVATE))
                 {
                     // Respond to unknown commands in private chats
-                    event.getChannel().sendMessage("I do not recognize this command, sorry!");
+                    event.getChannel().sendMessage("I do not recognize this command, sorry!").queue();
                 }
             }
 

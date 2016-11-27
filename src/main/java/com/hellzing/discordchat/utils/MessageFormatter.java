@@ -60,7 +60,7 @@ public class MessageFormatter
             while (matcher.find())
             {
                 // Get the complete matching user
-                Optional<Member> foundUser = DiscordWrapper.getServer().getMembers().stream().filter(user -> user.getEffectiveName().equalsIgnoreCase(matcher.group(1))).findFirst();
+                Optional<Member> foundUser = DiscordWrapper.getServer().getMembers().stream().filter(user -> user.getUser().getName().equalsIgnoreCase(matcher.group(1))).findFirst();
 
                 // Search further if user was not found
                 if (!foundUser.isPresent())
@@ -68,7 +68,7 @@ public class MessageFormatter
                     foundUser = DiscordWrapper.getServer()
                                               .getMembers()
                                               .stream()
-                                              .filter(user -> StringUtils.containsIgnoreCase(user.getEffectiveName(), matcher.group(1))).findFirst();
+                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUser().getName(), matcher.group(1))).findFirst();
 
                     // And even further by searching for the nickname
                     if (!foundUser.isPresent())

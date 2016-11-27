@@ -46,7 +46,7 @@ public class DiscordWrapper implements Runnable
         }
     }
 
-    public DiscordWrapper() throws Exception
+    private DiscordWrapper() throws Exception
     {
         if (instance != null)
         {
@@ -64,7 +64,7 @@ public class DiscordWrapper implements Runnable
             jda = new JDABuilder(AccountType.BOT).setToken(Config.getInstance().getBotToken()).addListener(new DiscordListener()).buildBlocking();
 
             // Get handled server
-            val server = jda.getGuildById(Config.getInstance().getServerId());
+            val server = getServer();
             if (server == null)
             {
                 DiscordChat.getLogger().error("Couldn't get the server with the specified ID, please check the config and ensure the ID is correct.");
@@ -93,6 +93,10 @@ public class DiscordWrapper implements Runnable
         }
     }
 
+    /**
+     * Sends a message to all monitored channels.
+     * @param message The message to send.
+     */
     public static void sendMessageToAllChannels(String message)
     {
         for (val channelName : Config.getInstance().getMonitoredChannels())
@@ -101,15 +105,17 @@ public class DiscordWrapper implements Runnable
         }
     }
 
+    /**
+     * Sends a message to a specified channel.
+     * @param channelName The specified channel.
+     * @param message The message to send.
+     */
     public static void sendMessageToChannel(String channelName, String message)
     {
         try
         {
-            val channel = instance.getChannel(channelName);
-            if (channel.isPresent())
-            {
-                channel.get().sendMessage(message);
-            }
+            // Send the message to the channel
+            instance.getChannel(channelName).ifPresent(textChannel -> textChannel.sendMessage(message).queue());
         }
         catch (Exception e)
         {
@@ -127,7 +133,6 @@ public class DiscordWrapper implements Runnable
         {
             if (instance.currentGame == null || !instance.jda.getPresence().getGame().getName().equals(gameName))
             {
-
                 // Apply game
                 instance.currentGame = gameName;
                 if (instance.ready)
@@ -142,6 +147,10 @@ public class DiscordWrapper implements Runnable
         }
     }
 
+    /**
+     * Returns the handled main Guild handled by this mod.
+     * @return The main Guild instance.
+     */
     public static Guild getServer()
     {
         return instance.jda.getGuildById(Config.getInstance().getServerId());
@@ -157,14 +166,23 @@ public class DiscordWrapper implements Runnable
         }
 
         // No channel found
+        DiscordChat.getLogger().debug("Requested channel not found (ignored case)! Name: " + channelName);
         return Optional.empty();
     }
 
+    /**
+     * Returns the server owner of the main Guild.
+     * @return The server owner Member instance.
+     */
     public static Member getServerOwner()
     {
         return instance.jda.getGuildById(Config.getInstance().getServerId()).getOwner();
     }
 
+    /**
+     * Returns all Members of the main Guild with admin permissions.
+     * @return The matched Members.
+     */
     public static List<Member> getServerAdmins()
     {
         val admins = new HashSet<Member>();

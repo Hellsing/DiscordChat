@@ -27,7 +27,7 @@ public class Online implements ICommand
         if (MinecraftServer.getServer().getCurrentPlayerCount() == 0)
         {
             // Send default message
-            channel.sendMessage(defaultMessage);
+            channel.sendMessage(defaultMessage).queue();
         }
         else
         {
@@ -46,7 +46,7 @@ public class Online implements ICommand
             }
 
             // Send message to discord channel
-            channel.sendMessage(MessageFormatter.getDiscordCodeBlock("diff", sb.toString()));
+            channel.sendMessage(MessageFormatter.getDiscordCodeBlock("diff", sb.toString())).queue();
         }
 
         return true;

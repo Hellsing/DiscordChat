@@ -29,6 +29,14 @@ version = mc_version + "-" + mod_version
 minecraft {
 	version = mc_version + "-" + forge_version
 	runDir = "run"
+	
+	srgExtra "PK: org/apache/commons/lang3 com/hellzing/shaded/apache/commons/lang3"
+	srgExtra "PK: org/apache/commons/collections4 com/hellzing/shaded/apache/commons/collections4"
+	srgExtra "PK: org/json com/hellzing/shaded/json"
+	srgExtra "PK: com/sun/jna com/hellzing/shaded/jna"
+	srgExtra "PK: org/json com/hellzing/shaded/json"
+	srgExtra "PK: com/neovisionaries/ws/client com/hellzing/shaded/ws/client"
+	srgExtra "PK: com/mashape/unirest com/hellzing/shaded/unirest"
 }
 
 processResources
