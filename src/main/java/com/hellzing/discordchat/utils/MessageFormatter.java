@@ -1,14 +1,22 @@
 package com.hellzing.discordchat.utils;
 
+import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.data.Messages;
+import com.hellzing.discordchat.discord.DiscordWrapper;
 import lombok.Getter;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class MessageFormatter
 {
     @Getter
     private static final String newLine = System.getProperty("line.separator");
     private static final String defaultSyntax = "diff";
+
+    private static final Pattern tagPattern = Pattern.compile("@(.+?)\\b");
 
     public static String getPlayerJoinMessage(String username)
     {
@@ -37,7 +45,47 @@ public class MessageFormatter
 
     public static String getMinecraftToDiscordMessage(String username, String message)
     {
-        return Messages.getInstance().getMinecraftChat().format(username, message);
+        // Get the correctly formatted message
+        String toSend = Messages.getInstance().getMinecraftChat().format(username, message);
+
+        try
+        {
+            // Create a StringBuffer
+            val buffer = new StringBuffer();
+
+            // Find all tagged users
+            val matcher = tagPattern.matcher(toSend);
+            while (matcher.find())
+            {
+                val foundUser = DiscordWrapper.getServer()
+                                              .getUsers()
+                                              .stream()
+                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUsername(), matcher.group(1)))
+                                              .findFirst();
+                if (foundUser.isPresent())
+                {
+                    matcher.appendReplacement(buffer, foundUser.get().getAsMention());
+                }
+                else
+                {
+                    DiscordChat.getLogger().debug("Possible tagged user not found: " + matcher.group(1));
+                    DiscordChat.getLogger().debug("Users: " + Arrays.toString(DiscordWrapper.getServer().getUsers().stream().map(user -> user.getUsername().toLowerCase()).toArray()));
+                    matcher.appendReplacement(buffer, "@" + matcher.group(1));
+                }
+            }
+
+            // Add tail
+            matcher.appendTail(buffer);
+
+            // Return result
+            return buffer.toString();
+        }
+        catch (Exception e)
+        {
+            DiscordChat.getLogger().error("An exception occurred while trying to replace mentioned users in message!", e);
+        }
+
+        return toSend;
     }
 
     public static String getDiscordToMinecraftMessage(String username, String message)
