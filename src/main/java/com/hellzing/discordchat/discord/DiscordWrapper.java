@@ -126,11 +126,11 @@ public class DiscordWrapper implements Runnable
      */
     public static void setCurrentGame(String gameName)
     {
-        instance.jda.getAccountManager().update();
-        if (instance.currentGame == null || !instance.jda.getSelfInfo().getCurrentGame().getName().equals(gameName))
+        try
         {
-            try
+            if (instance.currentGame == null || !instance.jda.getSelfInfo().getCurrentGame().getName().equals(gameName))
             {
+
                 // Apply game
                 instance.currentGame = gameName;
                 if (instance.ready)
@@ -138,10 +138,10 @@ public class DiscordWrapper implements Runnable
                     instance.jda.getAccountManager().setGame(gameName);
                 }
             }
-            catch (Exception e)
-            {
-                DiscordChat.getLogger().error("An error occurred while trying to set a new active game: " + gameName, e);
-            }
+        }
+        catch (Exception e)
+        {
+            DiscordChat.getLogger().error("An error occurred while trying to set a new active game: " + gameName, e);
         }
     }
 
