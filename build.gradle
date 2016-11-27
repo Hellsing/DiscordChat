@@ -9,10 +9,6 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
-		maven {
-            name = "bintray"
-            url = "https://dl.bintray.com/dv8fromtheworld/maven"
-        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
@@ -39,8 +35,7 @@ minecraft {
 	srgExtra "PK: com/mashape/unirest com/hellzing/shaded/unirest"
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -61,7 +56,7 @@ processResources
 
 repositories {
 	maven {
-		name = "bintray"
+		name = "dv8fromtheworld"
 		url = "https://dl.bintray.com/dv8fromtheworld/maven"
 	}
 }
