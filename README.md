@@ -12,8 +12,8 @@ Minecraft mod for Forge (Minecraft 1.7.10) which forwards the chat from both the
 
 ## Discord commands
 * !online|on|list
-⋅⋅⋅ Works on: Private message, monitored channels
-⋅⋅⋅ Description: Displays the current amount of players on the server, as well as the names of the users playing
+  * Works on: Private message, monitored channels
+  * Description: Displays the current amount of players on the server, as well as the names of the users playing
 * !reload|rl
-⋅⋅⋅ Works on: Private message (owner only)
-⋅⋅⋅ Description: Reloads all configurations (won't affect server changes while running, only monitored channels), including configured messages
+  * Works on: Private message (owner only)
+  * Description: Reloads all configurations (won't affect server changes while running, only monitored channels), including configured messages
