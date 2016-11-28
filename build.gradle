@@ -33,6 +33,7 @@ minecraft {
 	srgExtra "PK: org/json com/hellzing/shaded/json"
 	srgExtra "PK: com/neovisionaries/ws/client com/hellzing/shaded/ws/client"
 	srgExtra "PK: com/mashape/unirest com/hellzing/shaded/unirest"
+	srgExtra "PK: com/vdurmont/emoji com/hellzing/shaded/emoji"
 }
 
 processResources {
@@ -69,6 +70,7 @@ configurations {
 dependencies {
 	compileOnly "org.projectlombok:lombok:1.16.10"
 	shade group: "net.dv8tion", name: "JDA", version: "3.0.BETA_96"
+	shade group:  "com.vdurmont", name: "emoji-java", version: "3.1.3"
 }
 
 jar {

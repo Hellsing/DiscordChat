@@ -98,7 +98,7 @@ public class DiscordListener extends ListenerAdapter
                 {
                     // Send the message to the Minecraft server (without color codes)
                     Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getName(),
-                                                                                            Utility.Emoji.replaceEmojiWithName(Utility.stripMinecraftColors(event.getMessage().getContent()))));
+                                                                                            Utility.parseEmojisToAliases(Utility.stripMinecraftColors(event.getMessage().getContent()))));
                 }
             }
         }

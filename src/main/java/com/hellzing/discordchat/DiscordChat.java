@@ -6,7 +6,6 @@ import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
-import com.hellzing.discordchat.utils.Utility;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.*;
@@ -44,9 +43,6 @@ public class DiscordChat
         {
             // Load data related files
             reloadConfigs();
-
-            // Load emojis
-            Utility.Emoji.getEmojis();
 
             try
             {
