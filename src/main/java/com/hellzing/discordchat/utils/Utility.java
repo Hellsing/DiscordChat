@@ -13,7 +13,7 @@ import net.dv8tion.jda.core.entities.TextChannel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.common.ForgeHooks;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,13 +43,13 @@ public class Utility
     }
 
     /**
-     * Sends a message to the Minecraft server, visible for all players.
+     * Sends a message to the Minecraft server, visible for all players. URLs will be shown as clickable links ingame.
      * @param message The message to send.
      */
     public static void sendMinecraftChat(String message)
     {
-        // Create a new chat component
-        val component = new ChatComponentText(message);
+        // Create a new chat component, supporting url links
+        val component = ForgeHooks.newChatWithLinks(message);
 
         // Send the string message as Minecraft chat message to all online players
         MinecraftServer.getServer().getConfigurationManager().sendChatMsg(component);
