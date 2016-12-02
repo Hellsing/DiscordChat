@@ -42,7 +42,7 @@ public class Online implements ICommand
                 // Add a new line followed by all user names separated by comma
                 sb.append(MessageFormatter.getNewLine());
                 sb.append("+ ");
-                sb.append(MinecraftServer.getServer().getConfigurationManager().func_152609_b(false));
+                sb.append(MinecraftServer.getServer().getConfigurationManager().getPlayerNamesString(false));
             }
 
             // Send message to discord channel

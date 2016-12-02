@@ -23,6 +23,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 version = mc_version + "-" + mod_version
 
 minecraft {
+    mappings = 'stable_12'
 	version = mc_version + "-" + forge_version
 	runDir = "run"
 	

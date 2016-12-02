@@ -57,8 +57,7 @@ public class ForgeListener
         if (event.entityLiving instanceof EntityPlayer && Messages.getInstance().getDiscord().getPlayerDeath().isEnabled())
         {
             // Send the death message to the Discord server
-            DiscordWrapper
-                    .sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.func_110142_aN().func_151521_b().getUnformattedText())));
+            DiscordWrapper.sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.getCombatTracker().func_151521_b().getUnformattedText())));
         }
 
         // Boss killed
@@ -71,7 +70,7 @@ public class ForgeListener
             val playerName = Utility.getPlayerName((EntityPlayer) event.source.getEntity());
 
             // Get boss name
-            val bossName = event.entityLiving.func_145748_c_().getUnformattedText();
+            val bossName = event.entityLiving.getFormattedCommandSenderName().getUnformattedText();
 
             // Send the boss killed message to the Discord server
             DiscordWrapper.sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerBossKilledMessage(dimensionName, playerName, bossName)));
@@ -84,14 +83,14 @@ public class ForgeListener
         if (event.entityPlayer instanceof EntityPlayerMP && Messages.getInstance().getDiscord().getPlayerAchievement().isEnabled())
         {
             // Check if player has the achievement already or can't get it
-            val stats = ((EntityPlayerMP) event.entityPlayer).func_147099_x();
+            val stats = ((EntityPlayerMP) event.entityPlayer).getStatFile();
             if (stats.hasAchievementUnlocked(event.achievement) || !stats.canUnlockAchievement(event.achievement))
             {
                 return;
             }
 
             // Get achievement text
-            val achievementText = event.achievement.func_150951_e();
+            val achievementText = event.achievement.getStatName();
 
             // Send the achievement message to the Discord server
             DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));
