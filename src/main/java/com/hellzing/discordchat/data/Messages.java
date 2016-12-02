@@ -42,38 +42,38 @@ public final class Messages
 
     @NoArgsConstructor
     @AllArgsConstructor
+    public final class DiscordStyle
+    {
+        @Getter
+        @Expose
+        @SerializedName("Use code block")
+        private boolean codeBlock = false;
+        @Getter
+        @Expose
+        @SerializedName("Code syntax")
+        private String codeSyntax = "";
+
+        /**
+         * Wraps the given text in a Discord code block, using the given code syntax from the object. This method ignores whether the codeBlock value is set or not.
+         * @param text The text to wrap in a Discord code block.
+         * @return The wrapped code block text.
+         */
+        String apply(String text)
+        {
+            return MessageFormatter.getDiscordCodeBlock(codeSyntax, text);
+        }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
     public final class DiscordMessage extends Message
     {
-        public static final String defaultSyntax = "diff";
-
-        @NoArgsConstructor
-        @AllArgsConstructor
-        public final class Style
-        {
-            @Getter
-            @Expose
-            @SerializedName("Use code block")
-            private boolean codeBlock = false;
-            @Getter
-            @Expose
-            @SerializedName("Code syntax")
-            private String codeSyntax = "";
-
-            /**
-             * Wraps the given text in a Discord code block, using the given code syntax from the object. This method ignores whether the codeBlock value is set or not.
-             * @param text The text to wrap in a Discord code block.
-             * @return The wrapped code block text.
-             */
-            public String apply(String text)
-            {
-                return MessageFormatter.getDiscordCodeBlock(codeSyntax, text);
-            }
-        }
+        static final String defaultSyntax = "diff";
 
         @Getter
         @Expose
         @SerializedName("Message style")
-        private Style style = new Style();
+        private DiscordStyle style = new DiscordStyle();
 
         @Override
         public String format(Object... args)
@@ -91,7 +91,7 @@ public final class Messages
             return formattedMessage;
         }
 
-        public DiscordMessage(String messageFormat)
+        DiscordMessage(String messageFormat)
         {
             super(messageFormat);
         }
@@ -101,7 +101,7 @@ public final class Messages
          * @param messageFormat The message format.
          * @param codeSyntax The preferred code syntax.
          */
-        public DiscordMessage(String messageFormat, String codeSyntax)
+        DiscordMessage(String messageFormat, String codeSyntax)
         {
             this(messageFormat);
             this.style.codeBlock = true;
@@ -183,6 +183,7 @@ public final class Messages
         if (!messagesFile.exists())
         {
             // Create file within directory
+            //noinspection ResultOfMethodCallIgnored
             messagesFile.createNewFile();
         }
 
