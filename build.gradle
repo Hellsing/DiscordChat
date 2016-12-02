@@ -69,7 +69,7 @@ configurations {
 
 dependencies {
 	compileOnly "org.projectlombok:lombok:1.16.10"
-	shade group: "net.dv8tion", name: "JDA", version: "3.0.BETA_96"
+	shade group: "net.dv8tion", name: "JDA", version: "3.0.BETA_98"
 	shade group:  "com.vdurmont", name: "emoji-java", version: "3.1.3"
 }
 
