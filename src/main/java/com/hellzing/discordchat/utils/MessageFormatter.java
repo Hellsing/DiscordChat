@@ -16,33 +16,32 @@ public class MessageFormatter
 {
     @Getter
     private static final String newLine = System.getProperty("line.separator");
-    private static final String defaultSyntax = "diff";
 
     private static final Pattern tagPattern = Pattern.compile("@(.+?)\\b");
 
     public static String getPlayerJoinMessage(String username)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerJoin().format(username));
+        return Messages.getInstance().getDiscord().getPlayerJoin().format(username);
     }
 
     public static String getPlayerLeaveMessage(String username)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerLeave().format(username));
+        return Messages.getInstance().getDiscord().getPlayerLeave().format(username);
     }
 
     public static String getPlayerAchievementMessage(String username, String achievementName)
     {
-        return getDiscordCodeBlock("", Messages.getInstance().getDiscord().getPlayerAchievement().format(username, achievementName));
+        return Messages.getInstance().getDiscord().getPlayerAchievement().format(username, achievementName);
     }
 
     public static String getPlayerDeathMessage(String deathMessage)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerDeath().format(deathMessage));
+        return Messages.getInstance().getDiscord().getPlayerDeath().format(deathMessage);
     }
 
     public static String getPlayerBossKilledMessage(String dimensionName, String playerName, String bossName)
     {
-        return getDiscordCodeBlock(defaultSyntax, Messages.getInstance().getDiscord().getPlayerBossKilled().format(dimensionName, playerName, bossName));
+        return Messages.getInstance().getDiscord().getPlayerBossKilled().format(dimensionName, playerName, bossName);
     }
 
     public static String getMinecraftToDiscordMessage(String username, String message)

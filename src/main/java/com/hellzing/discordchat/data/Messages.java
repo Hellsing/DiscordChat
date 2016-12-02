@@ -12,7 +12,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class Messages
+public final class Messages
 {
     @Getter
     private static final File messagesFile = new File(Config.getConfigFolder().getAbsolutePath() + File.separatorChar + "Messages.json");
@@ -42,47 +42,116 @@ public class Messages
 
     @NoArgsConstructor
     @AllArgsConstructor
-    public class Discord
+    public final class DiscordMessage extends Message
+    {
+        public static final String defaultSyntax = "diff";
+
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public final class Style
+        {
+            @Getter
+            @Expose
+            @SerializedName("Use code block")
+            private boolean codeBlock = false;
+            @Getter
+            @Expose
+            @SerializedName("Code syntax")
+            private String codeSyntax = "";
+
+            /**
+             * Wraps the given text in a Discord code block, using the given code syntax from the object. This method ignores whether the codeBlock value is set or not.
+             * @param text The text to wrap in a Discord code block.
+             * @return The wrapped code block text.
+             */
+            public String apply(String text)
+            {
+                return MessageFormatter.getDiscordCodeBlock(codeSyntax, text);
+            }
+        }
+
+        @Getter
+        @Expose
+        @SerializedName("Message style")
+        private Style style = new Style();
+
+        @Override
+        public String format(Object... args)
+        {
+            // Get formatted message from the overridden method
+            String formattedMessage = super.format(args);
+
+            // Check if code block needs to be applied
+            if (style.codeBlock)
+            {
+                // Apply code block
+                formattedMessage = style.apply(formattedMessage);
+            }
+
+            return formattedMessage;
+        }
+
+        public DiscordMessage(String messageFormat)
+        {
+            super(messageFormat);
+        }
+
+        /**
+         * Creates a new instance of DiscordMessage, setting code block style to true and applying the given code syntax.
+         * @param messageFormat The message format.
+         * @param codeSyntax The preferred code syntax.
+         */
+        public DiscordMessage(String messageFormat, String codeSyntax)
+        {
+            this(messageFormat);
+            this.style.codeBlock = true;
+            this.style.codeSyntax = codeSyntax;
+        }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public final class Discord
     {
         @Getter
         @Expose
         @SerializedName("Chat from Minecraft")
-        private Message minecraftChat = new Message("`<%s>` %s");
+        private DiscordMessage minecraftChat = new DiscordMessage("`<%s>` %s");
 
         @Getter
         @Expose
         @SerializedName("Server has started")
-        private Message serverStarted = new Message("`Server has successfully started and you are able to join!` :ok_hand:");
+        private DiscordMessage serverStarted = new DiscordMessage("`Server has successfully started and you are able to join!` :ok_hand:");
 
         @Getter
         @Expose
         @SerializedName("Server is stopping")
-        private Message serverStopping = new Message("`Server is shutting down!` :sleeping:");
+        private DiscordMessage serverStopping = new DiscordMessage("`Server is shutting down!` :sleeping:");
 
         @Getter
         @Expose
         @SerializedName("Player joins Minecraft server")
-        private Message playerJoin = new Message("+ %s joined the Minecraft server.");
+        private DiscordMessage playerJoin = new DiscordMessage("+ %s joined the Minecraft server.", DiscordMessage.defaultSyntax);
 
         @Getter
         @Expose
         @SerializedName("Player leaves Minecraft server")
-        private Message playerLeave = new Message("- %s left the Minecraft server.");
+        private DiscordMessage playerLeave = new DiscordMessage("- %s left the Minecraft server.", DiscordMessage.defaultSyntax);
 
         @Getter
         @Expose
         @SerializedName("Player got achievement")
-        private Message playerAchievement = new Message("%s has just earned the achievement [%s]");
+        private DiscordMessage playerAchievement = new DiscordMessage("%s has just earned the achievement [%s]", "");
 
         @Getter
         @Expose
         @SerializedName("Player death")
-        private Message playerDeath = new Message("- DEATH -" + MessageFormatter.getNewLine() + "%s");
+        private DiscordMessage playerDeath = new DiscordMessage("- DEATH -" + MessageFormatter.getNewLine() + "%s", DiscordMessage.defaultSyntax);
 
         @Getter
         @Expose
         @SerializedName("Player killed a boss monster")
-        private Message playerBossKilled = new Message("+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!");
+        private DiscordMessage playerBossKilled = new DiscordMessage("+ Boss killed in dimension: %s!" + MessageFormatter.getNewLine() + "%s has slain the %s!", DiscordMessage.defaultSyntax);
     }
 
     @NoArgsConstructor
