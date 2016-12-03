@@ -214,7 +214,7 @@ public class Utility
             String shortLink = url;
             if (shortLink.length() > 30)
             {
-                shortLink = shortLink.substring(0, 30);
+                shortLink = shortLink.substring(0, 27) + "...";
             }
 
             // Set the click event and append the link.
