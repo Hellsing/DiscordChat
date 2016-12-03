@@ -34,6 +34,13 @@ public class DiscordListener extends ListenerAdapter
                 return;
             }
 
+            // Get the Member instance of the connected server
+            val member = DiscordWrapper.getServer().getMember(event.getAuthor());
+            if (member == null)
+            {
+                return;
+            }
+
             // Handle commands
             if (event.getMessage().getContent().startsWith(commandPrefix))
             {
@@ -56,11 +63,11 @@ public class DiscordListener extends ListenerAdapter
                     {
                         if (command.getPermissionType() == ICommand.PermissionType.EVERYONE
                                 || (command.getPermissionType() == ICommand.PermissionType.OWNER
-                                || command.getPermissionType() == ICommand.PermissionType.ADMIN) && event.getAuthor().equals(DiscordWrapper.getServerOwner())
-                                || command.getPermissionType() == ICommand.PermissionType.ADMIN && DiscordWrapper.getServerAdmins().contains(event.getAuthor()))
+                                || command.getPermissionType() == ICommand.PermissionType.ADMIN) && member.equals(DiscordWrapper.getServerOwner())
+                                || command.getPermissionType() == ICommand.PermissionType.ADMIN && DiscordWrapper.getServerAdmins().contains(member))
                         {
                             // Execute command
-                            val result = command.execute(event.getAuthor(), event.getChannel(), args);
+                            val result = command.execute(member, event.getChannel(), args);
 
                             // Return method if result was true
                             if (result)

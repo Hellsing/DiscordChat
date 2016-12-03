@@ -3,8 +3,8 @@ package com.hellzing.discordchat.commands;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import lombok.Getter;
 import lombok.val;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
 import net.minecraft.server.MinecraftServer;
 
 public class Online implements ICommand
@@ -22,7 +22,7 @@ public class Online implements ICommand
     private final String description = "Displays all current players on the server";
 
     @Override
-    public boolean execute(User sender, MessageChannel channel, String[] args)
+    public boolean execute(Member sender, MessageChannel channel, String[] args)
     {
         if (MinecraftServer.getServer().getCurrentPlayerCount() == 0)
         {

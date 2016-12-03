@@ -1,7 +1,7 @@
 package com.hellzing.discordchat.commands;
 
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
 
 public interface ICommand
 {
@@ -23,5 +23,5 @@ public interface ICommand
 
     String getDescription();
 
-    boolean execute(User sender, MessageChannel channel, String[] args);
+    boolean execute(Member sender, MessageChannel channel, String[] args);
 }

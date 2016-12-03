@@ -3,8 +3,8 @@ package com.hellzing.discordchat.commands;
 import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import lombok.Getter;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class Reload implements ICommand
@@ -19,7 +19,7 @@ public class Reload implements ICommand
     private final String description = "Reloads all configs";
 
     @Override
-    public boolean execute(User sender, MessageChannel channel, String[] args)
+    public boolean execute(Member sender, MessageChannel channel, String[] args)
     {
         channel.sendMessage("Reloading...").queue();
         try
