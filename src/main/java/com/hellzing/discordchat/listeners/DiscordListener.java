@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
@@ -133,6 +134,8 @@ public class DiscordListener extends ListenerAdapter
                             IChatComponent link = new ChatComponentText("[Attachment]");
                             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, attachment.getUrl());
                             link.getChatStyle().setChatClickEvent(click);
+                            HoverEvent hover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(attachment.getFileName()));
+                            link.getChatStyle().setChatHoverEvent(hover);
                             link.getChatStyle().setColor(EnumChatFormatting.GOLD);
 
                             // Send the text
