@@ -10,7 +10,11 @@ import lombok.val;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 
 public class DiscordListener extends ListenerAdapter
 {
@@ -103,9 +107,39 @@ public class DiscordListener extends ListenerAdapter
                 // Check if there are players online
                 if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
                 {
-                    // Send the message to the Minecraft server (without color codes)
-                    Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(member.getEffectiveName(),
-                                                                                            Utility.parseEmojisToAliases(Utility.stripMinecraftColors(event.getMessage().getContent()))));
+                    // Get the Discord message
+                    String message = event.getMessage().getContent();
+
+                    // Don't send attachment blank text
+                    if (message.length() > 0)
+                    {
+                        // Strip any Minecraft color codes
+                        message = Utility.stripMinecraftColors(message);
+
+                        // Parse emojis into their aliases
+                        message = Utility.parseEmojisToAliases(message);
+
+                        // Send the message to the Minecraft server
+                        Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(member.getEffectiveName(), message));
+                    }
+
+                    // Check the message for attachments
+                    val attachments = event.getMessage().getAttachments();
+                    if (attachments != null && attachments.size() > 0)
+                    {
+                        for (val attachment : attachments)
+                        {
+                            // Create clickable attachment text
+                            IChatComponent link = new ChatComponentText("[Attachment]");
+                            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, attachment.getUrl());
+                            link.getChatStyle().setChatClickEvent(click);
+                            link.getChatStyle().setUnderlined(true);
+                            link.getChatStyle().setColor(EnumChatFormatting.BLUE);
+
+                            // Send the text
+                            Utility.sendMinecraftChat(link);
+                        }
+                    }
                 }
             }
         }

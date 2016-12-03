@@ -44,11 +44,35 @@ public class Utility
      */
     public static void sendMinecraftChat(String message)
     {
-        // Create a new chat component, supporting url links
-        val component = parseChatLinks(message);
+        sendMinecraftChat(message, true);
+    }
+
+    /**
+     * Sends a message to the Minecraft server, visible for all players.
+     * @param message The message to send.
+     * @param parseUrls Whether to parse urls into clickable links or not.
+     */
+    public static void sendMinecraftChat(String message, boolean parseUrls)
+    {
+        IChatComponent component = new ChatComponentText(message);
+        if (parseUrls)
+        {
+            // Create a new chat component, supporting url links
+            component = parseChatLinks(message);
+        }
 
         // Send the string message as Minecraft chat message to all online players
         MinecraftServer.getServer().getConfigurationManager().sendChatMsg(component);
+    }
+
+    /**
+     * Sends a message to the Minecraft server, visible for all players.
+     * @param message The message to send.
+     */
+    public static void sendMinecraftChat(IChatComponent message)
+    {
+        // Send the string message as Minecraft chat message to all online players
+        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(message);
     }
 
     /**
