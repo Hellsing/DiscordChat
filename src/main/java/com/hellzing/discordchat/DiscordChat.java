@@ -175,7 +175,7 @@ public class DiscordChat
         Config.reloadConfig();
         Messages.reloadConfig();
 
-        if (DiscordWrapper.getInstance().isReady())
+        if (DiscordWrapper.getInstance() != null && DiscordWrapper.getInstance().isReady())
         {
             Utility.validateMonitoredChannels();
         }
