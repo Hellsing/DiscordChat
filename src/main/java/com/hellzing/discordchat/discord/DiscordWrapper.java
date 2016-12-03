@@ -166,7 +166,6 @@ public class DiscordWrapper implements Runnable
         }
 
         // No channel found
-        DiscordChat.getLogger().debug("Requested channel not found (ignored case)! Name: " + channelName);
         return Optional.empty();
     }
 

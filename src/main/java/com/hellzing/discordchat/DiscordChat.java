@@ -6,6 +6,7 @@ import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.data.Messages;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
+import com.hellzing.discordchat.utils.Utility;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.event.*;
@@ -141,6 +142,11 @@ public class DiscordChat
             return;
         }
 
+        if (DiscordWrapper.getInstance().isReady())
+        {
+            Utility.validateMonitoredChannels();
+        }
+
         if (Messages.getInstance().getDiscord().getServerStarted().isEnabled())
         {
             // Send message
@@ -168,6 +174,11 @@ public class DiscordChat
     {
         Config.reloadConfig();
         Messages.reloadConfig();
+
+        if (DiscordWrapper.getInstance().isReady())
+        {
+            Utility.validateMonitoredChannels();
+        }
     }
 
     /**

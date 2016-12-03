@@ -1,6 +1,8 @@
 package com.hellzing.discordchat.utils;
 
+import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.data.Config;
+import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.vdurmont.emoji.EmojiParser;
 import lombok.val;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -18,9 +20,9 @@ public class Utility
      */
     public static boolean isChannelMonitored(TextChannel channel)
     {
-        for (String s : Config.getInstance().getMonitoredChannels())
+        for (val monitoredChannel : Config.getInstance().getMonitoredChannels())
         {
-            if (channel.getName().equalsIgnoreCase(s))
+            if (channel.getName().equalsIgnoreCase(monitoredChannel))
             {
                 return true;
             }
@@ -70,5 +72,20 @@ public class Utility
     public static String parseEmojisToAliases(String text)
     {
         return EmojiParser.parseToAliases(text);
+    }
+
+    /**
+     * Validates all channels specified by the config file and logs those which do not match any channel on the server.
+     */
+    public static void validateMonitoredChannels()
+    {
+        val channels = DiscordWrapper.getServer().getTextChannels();
+        for (val monitoredChannel : Config.getInstance().getMonitoredChannels())
+        {
+            if (channels.stream().noneMatch(textChannel -> textChannel.getName().equalsIgnoreCase(monitoredChannel)))
+            {
+                DiscordChat.getLogger().info("Monitored channel not present, check your config! Channel name: " + monitoredChannel);
+            }
+        }
     }
 }
