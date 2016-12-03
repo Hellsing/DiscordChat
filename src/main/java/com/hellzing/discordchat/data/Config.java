@@ -71,7 +71,7 @@ public class Config
         }
 
         // Save the config back to file
-        FileUtils.writeStringToFile(configFile, gson.toJson(config));
+        FileUtils.writeStringToFile(configFile, gson.toJson(config), "utf-8");
 
         // Apply instance
         return config;

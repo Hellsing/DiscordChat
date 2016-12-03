@@ -196,7 +196,7 @@ public final class Messages
         }
 
         // Save the config back to file
-        FileUtils.writeStringToFile(messagesFile, Config.getGson().toJson(messages, Messages.class));
+        FileUtils.writeStringToFile(messagesFile, Config.getGson().toJson(messages, Messages.class), "utf-8");
 
         // Apply instance
         return messages;
