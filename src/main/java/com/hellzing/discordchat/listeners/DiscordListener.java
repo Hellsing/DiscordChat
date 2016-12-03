@@ -131,7 +131,7 @@ public class DiscordListener extends ListenerAdapter
                         for (val attachment : attachments)
                         {
                             // Create clickable attachment text
-                            IChatComponent link = new ChatComponentText("[Attachment]");
+                            IChatComponent link = new ChatComponentText("[ Attachment Link ]");
                             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, attachment.getUrl());
                             link.getChatStyle().setChatClickEvent(click);
                             HoverEvent hover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(attachment.getFileName()));

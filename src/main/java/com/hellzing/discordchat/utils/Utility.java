@@ -8,6 +8,7 @@ import lombok.val;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.event.ClickEvent;
+import net.minecraft.event.HoverEvent;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -209,9 +210,18 @@ public class Utility
                 continue;
             }
 
+            // Get a short version of the link if needed
+            String shortLink = url;
+            if (shortLink.length() > 30)
+            {
+                shortLink = shortLink.substring(0, 30);
+            }
+
             // Set the click event and append the link.
-            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, "[ " + shortLink + " }");
             link.getChatStyle().setChatClickEvent(click);
+            HoverEvent hover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(url));
+            link.getChatStyle().setChatHoverEvent(hover);
             link.getChatStyle().setColor(EnumChatFormatting.GOLD);
             if (ichat == null)
             {
