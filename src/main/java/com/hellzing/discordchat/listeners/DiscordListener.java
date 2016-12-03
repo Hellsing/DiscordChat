@@ -104,7 +104,7 @@ public class DiscordListener extends ListenerAdapter
                 if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
                 {
                     // Send the message to the Minecraft server (without color codes)
-                    Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(event.getMessage().getAuthor().getName(),
+                    Utility.sendMinecraftChat(MessageFormatter.getDiscordToMinecraftMessage(member.getEffectiveName(),
                                                                                             Utility.parseEmojisToAliases(Utility.stripMinecraftColors(event.getMessage().getContent()))));
                 }
             }
