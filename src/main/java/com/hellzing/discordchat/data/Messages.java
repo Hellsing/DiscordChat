@@ -73,7 +73,7 @@ public final class Messages
         @Getter
         @Expose
         @SerializedName("Message style")
-        private DiscordStyle style = new DiscordStyle();
+        private DiscordStyle style;
 
         @Override
         public String format(Object... args)
@@ -82,7 +82,7 @@ public final class Messages
             String formattedMessage = super.format(args);
 
             // Check if code block needs to be applied
-            if (style.codeBlock)
+            if (style != null && style.codeBlock)
             {
                 // Apply code block
                 formattedMessage = style.apply(formattedMessage);
@@ -104,8 +104,7 @@ public final class Messages
         DiscordMessage(String messageFormat, String codeSyntax)
         {
             this(messageFormat);
-            this.style.codeBlock = true;
-            this.style.codeSyntax = codeSyntax;
+            style = new DiscordStyle(true, codeSyntax);
         }
     }
 
