@@ -133,11 +133,11 @@ public class DiscordListener extends ListenerAdapter
                             IChatComponent link = new ChatComponentText("[Attachment]");
                             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, attachment.getUrl());
                             link.getChatStyle().setChatClickEvent(click);
-                            link.getChatStyle().setUnderlined(true);
-                            link.getChatStyle().setColor(EnumChatFormatting.BLUE);
+                            link.getChatStyle().setBold(true);
+                            link.getChatStyle().setColor(EnumChatFormatting.GOLD);
 
                             // Send the text
-                            Utility.sendMinecraftChat(link);
+                            Utility.sendMinecraftChat(new ChatComponentText(MessageFormatter.getDiscordToMinecraftMessage(member.getEffectiveName(), "")).appendSibling(link));
                         }
                     }
                 }

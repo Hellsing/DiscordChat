@@ -212,8 +212,8 @@ public class Utility
             // Set the click event and append the link.
             ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
             link.getChatStyle().setChatClickEvent(click);
-            link.getChatStyle().setUnderlined(true);
-            link.getChatStyle().setColor(EnumChatFormatting.BLUE);
+            link.getChatStyle().setBold(true);
+            link.getChatStyle().setColor(EnumChatFormatting.GOLD);
             if (ichat == null)
             {
                 ichat = link;
