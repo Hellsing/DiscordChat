@@ -214,7 +214,7 @@ public class Utility
             if (url.length() > 30)
             {
                 val shortLink = url.substring(0, 27) + "...";
-                link = new ChatComponentText("[ " + shortLink + " }");
+                link = new ChatComponentText("[ " + shortLink + " ]");
             }
 
             // Set the click event and append the link.
