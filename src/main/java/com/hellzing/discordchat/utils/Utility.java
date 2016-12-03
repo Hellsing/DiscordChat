@@ -174,7 +174,14 @@ public class Utility
             }
             lastEnd = end;
             String url = string.substring(start, end);
-            IChatComponent link = new ChatComponentText(url);
+
+            // Get a short version of the link if needed
+            String displayedUrl = url;
+            if (displayedUrl.length() > 30)
+            {
+                displayedUrl = url.substring(0, 27) + "...";
+            }
+            IChatComponent link = new ChatComponentText("[ " + displayedUrl + " ]");
 
             try
             {
@@ -208,13 +215,6 @@ public class Utility
                     ichat.appendText(url);
                 }
                 continue;
-            }
-
-            // Get a short version of the link if needed
-            if (url.length() > 30)
-            {
-                val shortLink = url.substring(0, 27) + "...";
-                link = new ChatComponentText("[ " + shortLink + " ]");
             }
 
             // Set the click event and append the link.
