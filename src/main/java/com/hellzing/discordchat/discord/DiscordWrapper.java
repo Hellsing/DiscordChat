@@ -76,7 +76,10 @@ public class DiscordWrapper implements Runnable
                 ready = true;
 
                 // Successfully setup, setting game
-                jda.getPresence().setGame(Game.of(currentGame));
+                if (currentGame != null)
+                {
+                    jda.getPresence().setGame(Game.of(currentGame));
+                }
             }
         }
         catch (LoginException | IllegalArgumentException e)
@@ -131,7 +134,7 @@ public class DiscordWrapper implements Runnable
     {
         try
         {
-            if (instance.currentGame == null || !instance.jda.getPresence().getGame().getName().equals(gameName))
+            if (gameName != null && (instance.currentGame == null || !instance.jda.getPresence().getGame().getName().equals(gameName)))
             {
                 // Apply game
                 instance.currentGame = gameName;
