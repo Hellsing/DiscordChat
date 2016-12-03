@@ -211,14 +211,14 @@ public class Utility
             }
 
             // Get a short version of the link if needed
-            String shortLink = url;
-            if (shortLink.length() > 30)
+            if (url.length() > 30)
             {
-                shortLink = shortLink.substring(0, 27) + "...";
+                val shortLink = url.substring(0, 27) + "...";
+                link = new ChatComponentText("[ " + shortLink + " }");
             }
 
             // Set the click event and append the link.
-            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, "[ " + shortLink + " }");
+            ClickEvent click = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
             link.getChatStyle().setChatClickEvent(click);
             HoverEvent hover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentText(url));
             link.getChatStyle().setChatHoverEvent(hover);
