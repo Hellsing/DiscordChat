@@ -112,6 +112,9 @@ public class MessageFormatter
                 }
             }
 
+            // Add the remaining message
+            emoteMatcher.appendTail(buffer);
+
             // Return result
             return buffer.toString();
         }
