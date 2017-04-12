@@ -18,6 +18,7 @@ public class MessageFormatter
     private static final String newLine = System.getProperty("line.separator");
 
     private static final Pattern tagPattern = Pattern.compile("@(.+?)\\b");
+    private static final Pattern emotePattern = Pattern.compile(":(.+?\\b):");
 
     public static String getPlayerJoinMessage(String username)
     {
@@ -52,14 +53,14 @@ public class MessageFormatter
         try
         {
             // Create a StringBuffer
-            val buffer = new StringBuffer();
+            StringBuffer buffer = new StringBuffer();
 
             // Find all tagged users
-            val matcher = tagPattern.matcher(toSend);
-            while (matcher.find())
+            val tagMatcher = tagPattern.matcher(toSend);
+            while (tagMatcher.find())
             {
                 // Get the complete matching user
-                Optional<Member> foundUser = DiscordWrapper.getServer().getMembers().stream().filter(user -> user.getUser().getName().equalsIgnoreCase(matcher.group(1))).findFirst();
+                Optional<Member> foundUser = DiscordWrapper.getServer().getMembers().stream().filter(user -> user.getUser().getName().equalsIgnoreCase(tagMatcher.group(1))).findFirst();
 
                 // Search further if user was not found
                 if (!foundUser.isPresent())
@@ -67,7 +68,7 @@ public class MessageFormatter
                     foundUser = DiscordWrapper.getServer()
                                               .getMembers()
                                               .stream()
-                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUser().getName(), matcher.group(1))).findFirst();
+                                              .filter(user -> StringUtils.containsIgnoreCase(user.getUser().getName(), tagMatcher.group(1))).findFirst();
 
                     // And even further by searching for the nickname
                     if (!foundUser.isPresent())
@@ -75,26 +76,41 @@ public class MessageFormatter
                         foundUser = DiscordWrapper.getServer()
                                                   .getMembers()
                                                   .stream()
-                                                  .filter(user -> StringUtils.containsIgnoreCase(user.getNickname(), matcher.group(1))).findFirst();
+                                                  .filter(user -> StringUtils.containsIgnoreCase(user.getNickname(), tagMatcher.group(1))).findFirst();
                     }
                 }
 
                 if (foundUser.isPresent())
                 {
                     // Replace found occurrence with Discord mention
-                    matcher.appendReplacement(buffer, foundUser.get().getAsMention());
+                    tagMatcher.appendReplacement(buffer, foundUser.get().getAsMention());
                 }
                 else
                 {
                     // No error, but list the possible mentionable users as debug message in the logs
-                    DiscordChat.getLogger().debug("Possible tagged user not found: " + matcher.group(1));
+                    DiscordChat.getLogger().debug("Possible tagged user not found: " + tagMatcher.group(1));
                     DiscordChat.getLogger().debug("Users: " + Arrays.toString(DiscordWrapper.getServer().getMembers().stream().map(user -> user.getEffectiveName().toLowerCase()).toArray()));
-                    matcher.appendReplacement(buffer, "@" + matcher.group(1));
+                    tagMatcher.appendReplacement(buffer, "@" + tagMatcher.group(1));
                 }
             }
 
             // Add the remaining message
-            matcher.appendTail(buffer);
+            tagMatcher.appendTail(buffer);
+            toSend = tagMatcher.toString();
+
+            // Find custom emotes
+            buffer = new StringBuffer();
+            val emoteMatcher = emotePattern.matcher(toSend);
+            while (emoteMatcher.find())
+            {
+                val emotes = DiscordWrapper.getServer().getEmotesByName(emoteMatcher.group(1), true);
+
+                if (emotes.size() > 0)
+                {
+                    // Replace with the first emote found
+                    emoteMatcher.appendReplacement(buffer, emotes.get(0).getAsMention());
+                }
+            }
 
             // Return result
             return buffer.toString();
