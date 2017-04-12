@@ -29,14 +29,7 @@ public class Utility
      */
     public static boolean isChannelMonitored(TextChannel channel)
     {
-        for (val monitoredChannel : Config.getInstance().getMonitoredChannels())
-        {
-            if (channel.getName().equalsIgnoreCase(monitoredChannel))
-            {
-                return true;
-            }
-        }
-        return false;
+        return channel.getName().equalsIgnoreCase(Config.getInstance().getMonitoredChannel());
     }
 
     /**
@@ -62,8 +55,8 @@ public class Utility
             component = parseChatLinks(message);
         }
 
-        // Send the string message as Minecraft chat message to all online players
-        MinecraftServer.getServer().getConfigurationManager().sendChatMsg(component);
+        // Send the message
+        sendMinecraftChat(component);
     }
 
     /**
@@ -113,12 +106,10 @@ public class Utility
     public static void validateMonitoredChannels()
     {
         val channels = DiscordWrapper.getServer().getTextChannels();
-        for (val monitoredChannel : Config.getInstance().getMonitoredChannels())
+
+        if (channels.stream().noneMatch(textChannel -> textChannel.getName().equalsIgnoreCase(Config.getInstance().getMonitoredChannel())))
         {
-            if (channels.stream().noneMatch(textChannel -> textChannel.getName().equalsIgnoreCase(monitoredChannel)))
-            {
-                DiscordChat.getLogger().info("Monitored channel not present, check your config! Channel name: " + monitoredChannel);
-            }
+            DiscordChat.getLogger().info("Monitored channel not present, check your config! Channel name: " + Config.getInstance().getMonitoredChannel());
         }
     }
 

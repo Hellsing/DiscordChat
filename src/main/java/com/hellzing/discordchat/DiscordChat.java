@@ -1,9 +1,11 @@
 package com.hellzing.discordchat;
 
+import com.hellzing.discordchat.commands.LinkUser;
 import com.hellzing.discordchat.commands.Online;
 import com.hellzing.discordchat.commands.Reload;
 import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.data.Messages;
+import com.hellzing.discordchat.data.Users;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.listeners.ForgeListener;
 import com.hellzing.discordchat.utils.Utility;
@@ -17,6 +19,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mod(modid = DiscordChat.modId, name = DiscordChat.modId, version = DiscordChat.version, acceptableRemoteVersions = "*")
 public class DiscordChat
@@ -28,6 +32,9 @@ public class DiscordChat
     private static Logger logger;
     @Getter
     private static java.io.File modConfigDirectory;
+
+    @Getter
+    private static Map<String, String> userLinkMap = new HashMap<>();
 
     private static boolean initialized;
 
@@ -126,6 +133,7 @@ public class DiscordChat
             // Register commands
             Commands.getInstance().registerCommand(new Online());
             Commands.getInstance().registerCommand(new Reload());
+            Commands.getInstance().registerCommand(new LinkUser());
         }
         catch (Exception e)
         {
@@ -150,7 +158,7 @@ public class DiscordChat
         if (Messages.getInstance().getDiscord().getServerStarted().isEnabled())
         {
             // Send message
-            DiscordWrapper.sendMessageToAllChannels(Messages.getInstance().getDiscord().getServerStarted().getMessageFormat());
+            DiscordWrapper.sendMessageToChannel(Messages.getInstance().getDiscord().getServerStarted().getMessageFormat());
         }
     }
 
@@ -160,7 +168,7 @@ public class DiscordChat
         if (Messages.getInstance().getDiscord().getServerStopping().isEnabled())
         {
             // Notify channels
-            DiscordWrapper.sendMessageToAllChannels(Messages.getInstance().getDiscord().getServerStopping().getMessageFormat());
+            DiscordWrapper.sendMessageToChannel(Messages.getInstance().getDiscord().getServerStopping().getMessageFormat());
         }
 
         // Shutdown DiscordWrapper wrapper
@@ -174,6 +182,7 @@ public class DiscordChat
     {
         Config.reloadConfig();
         Messages.reloadConfig();
+        Users.reloadConfig();
 
         if (DiscordWrapper.getInstance() != null && DiscordWrapper.getInstance().isReady())
         {

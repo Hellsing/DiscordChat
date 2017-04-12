@@ -115,7 +115,7 @@ public final class Messages
         @Getter
         @Expose
         @SerializedName("Chat from Minecraft")
-        private DiscordMessage minecraftChat = new DiscordMessage("`<%s>` %s");
+        private DiscordMessage minecraftChat = new DiscordMessage("%s");
 
         @Getter
         @Expose

@@ -44,10 +44,10 @@ public class MessageFormatter
         return Messages.getInstance().getDiscord().getPlayerBossKilled().format(dimensionName, playerName, bossName);
     }
 
-    public static String getMinecraftToDiscordMessage(String username, String message)
+    public static String getMinecraftToDiscordMessage(String message)
     {
         // Get the correctly formatted message
-        String toSend = Messages.getInstance().getDiscord().getMinecraftChat().format(username, message);
+        String toSend = Messages.getInstance().getDiscord().getMinecraftChat().format(message);
 
         try
         {

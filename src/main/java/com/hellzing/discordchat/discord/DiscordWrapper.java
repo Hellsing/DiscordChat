@@ -3,6 +3,8 @@ package com.hellzing.discordchat.discord;
 import com.hellzing.discordchat.DiscordChat;
 import com.hellzing.discordchat.data.Config;
 import com.hellzing.discordchat.listeners.DiscordListener;
+import com.mrpowergamerbr.temmiewebhook.DiscordMessage;
+import com.mrpowergamerbr.temmiewebhook.TemmieWebhook;
 import lombok.Getter;
 import lombok.val;
 import net.dv8tion.jda.core.AccountType;
@@ -25,6 +27,9 @@ public class DiscordWrapper implements Runnable
 
     @Getter
     private static DiscordWrapper instance;
+
+    @Getter
+    private static TemmieWebhook webhook = new TemmieWebhook(Config.getInstance().getWebhookUrl());
 
     @Getter
     private JDA jda;
@@ -100,12 +105,9 @@ public class DiscordWrapper implements Runnable
      * Sends a message to all monitored channels.
      * @param message The message to send.
      */
-    public static void sendMessageToAllChannels(String message)
+    public static void sendMessageToChannel(String message)
     {
-        for (val channelName : Config.getInstance().getMonitoredChannels())
-        {
-            sendMessageToChannel(channelName, message);
-        }
+        sendMessageToChannel(Config.getInstance().getMonitoredChannel(), message);
     }
 
     /**
@@ -132,21 +134,29 @@ public class DiscordWrapper implements Runnable
      */
     public static void setCurrentGame(String gameName)
     {
+        if (gameName != null)
+        {
+            // Apply game
+            instance.currentGame = gameName;
+            validateCurrentGame();
+        }
+    }
+
+    /**
+     * Validates the current game and applies the last set game if it was not correctly applied due to session clashing.
+     */
+    public static void validateCurrentGame()
+    {
         try
         {
-            if (gameName != null && (instance.currentGame == null || !instance.jda.getPresence().getGame().getName().equals(gameName)))
+            if (instance.ready && instance.currentGame != null)
             {
-                // Apply game
-                instance.currentGame = gameName;
-                if (instance.ready)
-                {
-                    instance.jda.getPresence().setGame(Game.of(gameName));
-                }
+                instance.jda.getPresence().setGame(Game.of(instance.currentGame));
             }
         }
         catch (Exception e)
         {
-            DiscordChat.getLogger().error("An error occurred while trying to set a new active game: " + gameName, e);
+            DiscordChat.getLogger().error("An error occurred while trying to validate the active game: " + instance.currentGame, e);
         }
     }
 
@@ -178,7 +188,7 @@ public class DiscordWrapper implements Runnable
      */
     public static Member getServerOwner()
     {
-        return instance.jda.getGuildById(Config.getInstance().getServerId()).getOwner();
+        return getServer().getOwner();
     }
 
     /**
@@ -201,5 +211,17 @@ public class DiscordWrapper implements Runnable
         }
 
         return new ArrayList<>(admins);
+    }
+
+    public static void sendWebhookMessage(Member fromMember, String message)
+    {
+        sendWebhookMessage(fromMember.getEffectiveName(), message, fromMember.getUser().getEffectiveAvatarUrl());
+    }
+
+    public static void sendWebhookMessage(String displayName, String message, String avatarUrl)
+    {
+        // Username, Content, Avatar URL
+        DiscordMessage dm = new DiscordMessage(displayName + " (Minecraft)", message, avatarUrl != null ? avatarUrl : instance.jda.getSelfUser().getEffectiveAvatarUrl());
+        webhook.sendMessage(dm);
     }
 }

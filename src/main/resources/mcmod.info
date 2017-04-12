@@ -4,11 +4,12 @@
 	  "name": "DiscordChat",
 	  "version": "$version",
 	  "mcversion": "$mcversion",
-	  "description": "Relays MC chat to Discord and vice versa",
-	  "credits": "The developers of JDA for making an awesome Java wrapper for the Discord API.",
+	  "description": "Relays the chat from Minecraft to Discord and vice versa.",
+	  "credits": "Authored by Hellsing, based on an original idea by shadowfacts"",
 	  "url": "https://github.com/hellzing/DiscordChat",
 	  "updateUrl": "",
-	  "authorList": [ "shadowfacts", "Hellsing" ],
-	  "screenshots": []
+	  "authorList": [ "Hellsing" ],
+	  "screenshots": [],
+	  "dependencies": [ "rftools" ],
 	}
 ]

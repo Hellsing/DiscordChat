@@ -1,13 +1,16 @@
 package com.hellzing.discordchat.listeners;
 
 import com.hellzing.discordchat.data.Messages;
+import com.hellzing.discordchat.data.Users;
 import com.hellzing.discordchat.discord.DiscordWrapper;
 import com.hellzing.discordchat.utils.MessageFormatter;
 import com.hellzing.discordchat.utils.Utility;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import lombok.val;
+import net.dv8tion.jda.core.entities.Member;
 import net.minecraft.entity.boss.IBossDisplayData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,46 +21,69 @@ import net.minecraftforge.event.entity.player.AchievementEvent;
 
 public class ForgeListener
 {
-    private static final String onlineFormat = "%1$d/%2$d currently";
+    private static final String onlineFormat = "-> %1$d/%2$d";
     private static long lastUpdate;
+
+    /**
+     * Updates the player count displayed on Discord as currently played game.
+     */
+    private void updatePlayerCountDiscord()
+    {
+        // Create new game based on players
+        String gameName = "alone :^(";
+        if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
+        {
+            gameName = String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount(), MinecraftServer.getServer().getMaxPlayers());
+        }
+
+        // Apply the custom game
+        DiscordWrapper.setCurrentGame(gameName);
+    }
 
     @SubscribeEvent
     public void onTick(TickEvent.ServerTickEvent event)
     {
-        if (System.currentTimeMillis() - lastUpdate > 1000)
+        if (System.currentTimeMillis() - lastUpdate > 2500)
         {
             lastUpdate = System.currentTimeMillis();
-
-            // Create new game based on players
-            String gameName = "alone...";
-            if (MinecraftServer.getServer().getCurrentPlayerCount() > 0)
-            {
-                gameName = String.format(onlineFormat, MinecraftServer.getServer().getCurrentPlayerCount(), MinecraftServer.getServer().getMaxPlayers());
-            }
-
-            // Apply the custom game
-            DiscordWrapper.setCurrentGame(gameName);
+            updatePlayerCountDiscord();
         }
     }
 
     @SubscribeEvent
     public void onServerChat(ServerChatEvent event)
     {
+        // Send message to Discord Channel
         if (event.player != null && Messages.getInstance().getDiscord().getMinecraftChat().isEnabled())
         {
-            // Send the chat message to the Discord server
-            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getMinecraftToDiscordMessage(event.username, event.message));
+            // Parse the message to be sent to the server
+            val message = MessageFormatter.getMinecraftToDiscordMessage(event.message);
+
+            Member discordMember = null;
+            if (Users.getInstance().getLinkedUsers().containsKey(event.username))
+            {
+                discordMember = DiscordWrapper.getServer().getMemberById(Users.getInstance().getLinkedUsers().get(event.username));
+            }
+
+            if (discordMember != null)
+            {
+                DiscordWrapper.sendWebhookMessage(discordMember, message);
+            }
+            else
+            {
+                DiscordWrapper.sendWebhookMessage(event.username, message, null);
+            }
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onLivingDeath(LivingDeathEvent event)
     {
         // Player death
         if (event.entityLiving instanceof EntityPlayer && Messages.getInstance().getDiscord().getPlayerDeath().isEnabled())
         {
             // Send the death message to the Discord server
-            DiscordWrapper.sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.getCombatTracker().func_151521_b().getUnformattedText())));
+            DiscordWrapper.sendMessageToChannel(Utility.stripMinecraftColors(MessageFormatter.getPlayerDeathMessage(event.entityLiving.getCombatTracker().func_151521_b().getUnformattedText())));
         }
 
         // Boss killed
@@ -73,11 +99,11 @@ public class ForgeListener
             val bossName = event.entityLiving.getFormattedCommandSenderName().getUnformattedText();
 
             // Send the boss killed message to the Discord server
-            DiscordWrapper.sendMessageToAllChannels(Utility.stripMinecraftColors(MessageFormatter.getPlayerBossKilledMessage(dimensionName, playerName, bossName)));
+            DiscordWrapper.sendMessageToChannel(Utility.stripMinecraftColors(MessageFormatter.getPlayerBossKilledMessage(dimensionName, playerName, bossName)));
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onAchievement(AchievementEvent event)
     {
         if (event.entityPlayer instanceof EntityPlayerMP && Messages.getInstance().getDiscord().getPlayerAchievement().isEnabled())
@@ -93,7 +119,7 @@ public class ForgeListener
             val achievementText = event.achievement.getStatName();
 
             // Send the achievement message to the Discord server
-            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));
+            DiscordWrapper.sendMessageToChannel(MessageFormatter.getPlayerAchievementMessage(Utility.getPlayerName(event.entityPlayer), achievementText.getUnformattedText()));
         }
     }
 
@@ -103,7 +129,11 @@ public class ForgeListener
         if (Messages.getInstance().getDiscord().getPlayerJoin().isEnabled())
         {
             // Send the join message to the Discord server
-            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerJoinMessage(Utility.getPlayerName(event.player)));
+            DiscordWrapper.sendMessageToChannel(MessageFormatter.getPlayerJoinMessage(Utility.getPlayerName(event.player)));
+
+            // Update player count
+            updatePlayerCountDiscord();
+
         }
     }
 
@@ -113,7 +143,10 @@ public class ForgeListener
         if (Messages.getInstance().getDiscord().getPlayerLeave().isEnabled())
         {
             // Send the leave message to the Discord server
-            DiscordWrapper.sendMessageToAllChannels(MessageFormatter.getPlayerLeaveMessage(Utility.getPlayerName(event.player)));
+            DiscordWrapper.sendMessageToChannel(MessageFormatter.getPlayerLeaveMessage(Utility.getPlayerName(event.player)));
+
+            // Update player count
+            updatePlayerCountDiscord();
         }
     }
 }

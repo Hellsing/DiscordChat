@@ -36,12 +36,16 @@ public class Config
     private String botToken = "";
     @Getter
     @Expose
+    @SerializedName("Webhook URL")
+    private String webhookUrl = "";
+    @Getter
+    @Expose
     @SerializedName("Server ID")
     private String serverId = "";
     @Getter
     @Expose
-    @SerializedName("Monitored Channels")
-    private String[] monitoredChannels = new String[] { "minecraft", "feed-the-beast", "technic-pack", "forge-server" };
+    @SerializedName("Monitored Channel")
+    private String monitoredChannel = "minecraft";
 
     private static Config loadConfigFile() throws IOException
     {
