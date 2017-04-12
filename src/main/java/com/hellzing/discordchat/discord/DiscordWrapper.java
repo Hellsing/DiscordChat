@@ -51,6 +51,14 @@ public class DiscordWrapper implements Runnable
         }
     }
 
+    public static void shutdown()
+    {
+        if (discordThread != null)
+        {
+            instance.jda.shutdown();
+        }
+    }
+
     private DiscordWrapper() throws Exception
     {
         if (instance != null)
@@ -80,6 +88,9 @@ public class DiscordWrapper implements Runnable
                 // Mark as ready
                 ready = true;
 
+                // Enable auto reconnect
+                jda.setAutoReconnect(true);
+
                 // Successfully setup, setting game
                 if (currentGame != null)
                 {
@@ -102,12 +113,22 @@ public class DiscordWrapper implements Runnable
     }
 
     /**
-     * Sends a message to all monitored channels.
+     * Sends a message to all monitored channels. This will queue the message to be sent async.
      * @param message The message to send.
      */
     public static void sendMessageToChannel(String message)
     {
-        sendMessageToChannel(Config.getInstance().getMonitoredChannel(), message);
+        sendMessageToChannel(message, false);
+    }
+
+    /**
+     * Sends a message to all monitored channels.
+     * @param message The message to send.
+     * @param waitCompletion Whether it should block the thread until the message was sent or not.
+     */
+    public static void sendMessageToChannel(String message, boolean waitCompletion)
+    {
+        sendMessageToChannel(Config.getInstance().getMonitoredChannel(), message, waitCompletion);
     }
 
     /**
@@ -115,12 +136,23 @@ public class DiscordWrapper implements Runnable
      * @param channelName The specified channel.
      * @param message The message to send.
      */
-    public static void sendMessageToChannel(String channelName, String message)
+    public static void sendMessageToChannel(String channelName, String message, boolean waitCompletion)
     {
         try
         {
             // Send the message to the channel
-            instance.getChannel(channelName).ifPresent(textChannel -> textChannel.sendMessage(message).queue());
+            instance.getChannel(channelName).ifPresent(textChannel ->
+                                                       {
+                                                           val sendMessage = textChannel.sendMessage(message);
+                                                           if (waitCompletion)
+                                                           {
+                                                               sendMessage.complete();
+                                                           }
+                                                           else
+                                                           {
+                                                               sendMessage.queue();
+                                                           }
+                                                       });
         }
         catch (Exception e)
         {

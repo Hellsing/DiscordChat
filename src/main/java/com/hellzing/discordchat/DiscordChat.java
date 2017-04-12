@@ -168,11 +168,11 @@ public class DiscordChat
         if (Messages.getInstance().getDiscord().getServerStopping().isEnabled())
         {
             // Notify channels
-            DiscordWrapper.sendMessageToChannel(Messages.getInstance().getDiscord().getServerStopping().getMessageFormat());
+            DiscordWrapper.sendMessageToChannel(Messages.getInstance().getDiscord().getServerStopping().getMessageFormat(), true);
         }
 
         // Shutdown DiscordWrapper wrapper
-        DiscordWrapper.getInstance().getJda().shutdown();
+        DiscordWrapper.shutdown();
     }
 
     /**
