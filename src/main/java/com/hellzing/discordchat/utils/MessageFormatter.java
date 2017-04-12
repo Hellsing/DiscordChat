@@ -96,7 +96,7 @@ public class MessageFormatter
 
             // Add the remaining message
             tagMatcher.appendTail(buffer);
-            toSend = tagMatcher.toString();
+            toSend = buffer.toString();
 
             // Find custom emotes
             buffer = new StringBuffer();
