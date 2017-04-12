@@ -10,10 +10,8 @@ import lombok.val;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Game;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.requests.RestAction;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -143,7 +141,7 @@ public class DiscordWrapper implements Runnable
             // Send the message to the channel
             instance.getChannel(channelName).ifPresent(textChannel ->
                                                        {
-                                                           val sendMessage = textChannel.sendMessage(message);
+                                                           RestAction<Message> sendMessage = textChannel.sendMessage(message);
                                                            if (waitCompletion)
                                                            {
                                                                sendMessage.complete();
